@@ -11,6 +11,12 @@ class GameService {
   get state() {
     return this.client.getState()
   }
+  isActive(playerId) {
+    return playerId in (this.state.ctx.activePlayers || {})
+  }
+  isCurrentPlayer(playerId) {
+    return playerId == this.state.ctx.currentPlayer
+  }
 }
 
 class DebugComponentController {

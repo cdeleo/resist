@@ -13,11 +13,11 @@ class PlayerComponent {
   constructor(gameService) {
     this.g = gameService
   }
-  get thinking() {
-    return this.playerId in (this.g.state.ctx.activePlayers || {})
+  get isThinking() {
+    return this.g.isActive(this.playerId)
   }
-  get currentPlayer() {
-    return this.playerId == this.g.state.ctx.currentPlayer
+  get isLeader() {
+    return this.g.isCurrentPlayer(this.playerId)
   }
 }
 
