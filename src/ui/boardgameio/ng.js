@@ -31,6 +31,10 @@ class DebugComponentController {
     this.evtArgs = ''
   }
 
+  updatePlayerID(playerID) {
+    this.client.updatePlayerID(playerID)
+  }
+
   makeMove(moveName) {
     this._execute(this.client.moves[moveName], this.moveArgs)
   }

@@ -25,9 +25,9 @@ angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
 ])
-  .constant('gameID', 'DEADBEEF')
-  .constant('playerID', 'Wes')
   // .constant('multiplayer', BoardgameIO.Local())
+  .constant('gameID', 'default')
+  .constant('playerID', '1')
   .constant('game', {
     'setup': () => ({ cells: Array(9).fill(null) }),
     'moves': {

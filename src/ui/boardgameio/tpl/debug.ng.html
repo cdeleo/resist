@@ -32,6 +32,10 @@
 </style>
 <div class="bgio-debug">
   <div>
+      <h3>Players</h3>
+      <button ng-repeat="p in $ctrl.client.getState().ctx.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.client.playerID">{{ p }}</button>
+  </div>
+  <div>
       <h3>Game State</h3>
       <pre><code>{{ $ctrl.client.getState().G | json }}</code></pre>
   </div>
