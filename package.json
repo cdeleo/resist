@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "jest": "^25.3.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "boardgame.io": "^0.39.7"
+  }
+}
