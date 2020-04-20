@@ -1,9 +1,23 @@
 import { ngBoardgameIO } from './boardgameio/ng.js'
 
-class ResistDashboard {}
-class ResistState {
-  constructor() {
-    this.cells = Array(9).fill(null)
+class DashboardComponent {
+  constructor(gameService) {
+    this.g = gameService
+  }
+  get playerIds() {
+    return this.g.state.ctx.playOrder
+  }
+}
+
+class PlayerComponent {
+  constructor(gameService) {
+    this.g = gameService
+  }
+  get thinking() {
+    return this.playerId in (this.g.state.ctx.activePlayers || [])
+  }
+  get currentPlayer() {
+    return this.playerId == this.g.state.ctx.currentPlayer
   }
 }
 
@@ -12,7 +26,7 @@ angular.module('resist', [
   ngBoardgameIO.debugModuleName,
 ])
   .constant('game', {
-    'setup': () => new ResistState(),
+    'setup': () => ({ cells: Array(9).fill(null) }),
     'moves': {
       clickCell(G, ctx, id) {
         G.cells[id] = ctx.currentPlayer
@@ -20,7 +34,14 @@ angular.module('resist', [
     },
   })
   .component('reDash', {
-    'controller': ResistDashboard,
+    'controller': DashboardComponent,
     'templateUrl': 'tpl/dashboard.ng.html',
+  })
+  .component('rePlayer', {
+    'controller': PlayerComponent,
+    'templateUrl': 'tpl/player.ng.html',
+    'bindings': {
+      'playerId': '<',
+    },
   })
 angular.bootstrap(document.body, ['resist'])

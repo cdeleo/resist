@@ -7,6 +7,10 @@ class GameService {
   constructor(game) {
     this.client = BoardgameIO.Client({'game': game})
   }
+
+  get state() {
+    return this.client.getState()
+  }
 }
 
 class DebugComponentController {
