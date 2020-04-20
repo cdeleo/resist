@@ -1,0 +1,4 @@
+<div class="bgio-log bgio-log-entry" ng-class="$ctrl.value.action.type" id="log-state-{{ $ctrl.value._stateID }}">
+  <span class="player-id">Player {{ $ctrl.value.action.payload.playerID }}</span>
+  <span class="move" title="{{ $ctrl.value.action.type }}">{{ $ctrl.value.action.payload.type }}({{ $ctrl.value.action.payload.args }})</span>
+</div>
