@@ -1,2 +1,7 @@
 <bgio-debug></bgio-debug>
-<re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>
+<div ng-if="$ctrl.g.state == null">
+  No State
+</div>
+<div ng-if="$ctrl.g.state != null">
+  <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>
+</div>

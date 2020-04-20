@@ -4,8 +4,13 @@ export const ngBoardgameIO = {
 }
 
 class GameService {
-  constructor(game) {
-    this.client = BoardgameIO.Client({'game': game})
+  constructor(game, gameID, playerID, multiplayer) {
+    this.client = BoardgameIO.Client({
+      game,
+      gameID,
+      playerID,
+      multiplayer,
+    })
   }
 
   get state() {
@@ -56,6 +61,9 @@ class LogEntryComponentController {
 }
 
 angular.module(ngBoardgameIO.moduleName, [])
+  .constant('gameID', undefined)
+  .constant('playerID', undefined)
+  .constant('multiplayer', undefined)
   .service('gameService', GameService)
 
 angular.module(ngBoardgameIO.debugModuleName, [ngBoardgameIO.moduleName])
