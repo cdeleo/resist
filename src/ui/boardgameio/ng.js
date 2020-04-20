@@ -26,14 +26,17 @@ class DebugComponentController {
     this.evtArgs = ''
   }
 
-  /** Parses [moveArgs] as a [JSON] array and then dynamically applies the result to the move. */
   makeMove(moveName) {
-    this.client.moves[moveName].apply(null, JSON.parse(`[${this.moveArgs}]`))
+    this._execute(this.client.moves[moveName], this.moveArgs)
   }
 
-  /** Parses [evtArgs] as a [JSON] array and then dynamically applies the result to the event. */
   triggerEvent(eventName) {
-    this.client.events[eventName].apply(null, JSON.parse(`[${this.evtArgs}]`))
+    this._execute(this.client.events[eventName], this.evtArgs)
+  }
+
+  /** Parses [argsAsJsonArrayString] and then dynamically applies the result to a fn. */
+  _execute(fn, argsAsJsonArrayString) {
+    fn.apply(null, JSON.parse(`[${argsAsJsonArrayString}]`))
   }
 }
 
