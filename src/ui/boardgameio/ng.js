@@ -17,11 +17,17 @@ class DebugComponentController {
   constructor(gameService) {
     this.client = gameService.client
     this.moveArgs = ''
+    this.evtArgs = ''
   }
 
   /** Parses [moveArgs] as a [JSON] array and then dynamically applies the result to the move. */
   makeMove(moveName) {
     this.client.moves[moveName].apply(null, JSON.parse(`[${this.moveArgs}]`))
+  }
+
+  /** Parses [evtArgs] as a [JSON] array and then dynamically applies the result to the event. */
+  triggerEvent(eventName) {
+    this.client.events[eventName].apply(null, JSON.parse(`[${this.evtArgs}]`))
   }
 }
 

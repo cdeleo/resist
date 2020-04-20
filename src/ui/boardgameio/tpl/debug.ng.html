@@ -37,12 +37,13 @@
   </div>
   <div>
       <h3>Moves</h3>
-      <input ng-model="$ctrl.moveArgs">
-      <button ng-repeat="(name, action) in $ctrl.client.moves" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
+      <div><input ng-model="$ctrl.moveArgs" placeholder="Arguments"></div>
+      <button ng-repeat="(name, _) in $ctrl.client.moves" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Events</h3>
-      <button ng-repeat="(name, action) in $ctrl.client.events" ng-click="action()">{{ name }}</button>
+      <div><input ng-model="$ctrl.evtArgs" placeholder="Arguments"></div>
+      <button ng-repeat="(name, _) in $ctrl.client.events" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>

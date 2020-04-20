@@ -14,7 +14,7 @@ class PlayerComponent {
     this.g = gameService
   }
   get thinking() {
-    return this.playerId in (this.g.state.ctx.activePlayers || [])
+    return this.playerId in (this.g.state.ctx.activePlayers || {})
   }
   get currentPlayer() {
     return this.playerId == this.g.state.ctx.currentPlayer
