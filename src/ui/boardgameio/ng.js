@@ -40,7 +40,20 @@ class DebugComponentController {
   }
 }
 
-class LogEntryComponentController {}
+class LogEntryComponentController {
+  get actionType() {
+    return this.value.action.type
+  }
+  get playerID() {
+    return this.value.action.payload.playerID
+  }
+  get action() {
+    return this.value.action.payload.type
+  }
+  get args() {
+    return this.value.action.payload.args
+  }
+}
 
 angular.module(ngBoardgameIO.moduleName, [])
   .service('gameService', GameService)
