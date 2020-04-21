@@ -28,8 +28,9 @@ angular.module('resist', [
 ])
   .constant('gameID', 'default')
   .constant('playerID', '1')
+  .constant('numPlayers', 5)
   .constant('multiplayer', BoardgameIO.Local())
-  .constant('game', resistGame)
+  .constant('game', resistGame())
   .component('reDash', {
     'controller': DashboardComponent,
     'templateUrl': 'tpl/dashboard.ng.html',

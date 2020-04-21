@@ -4,17 +4,18 @@ export const ngBoardgameIO = {
 }
 
 class GameService {
-  constructor(game, gameID, playerID, multiplayer, debug, $timeout) {
+  constructor(game, gameID, playerID, numPlayers, multiplayer, debug, $timeout) {
     this.client = BoardgameIO.Client({
       game,
       gameID,
       playerID,
+      numPlayers,
       multiplayer,
       debug,
     })
     if (multiplayer) {
-      this.client.subscribe(function() {
-        $timeout(() => {}) // Trigger $rootScope update on the next cycle
+      this.client.subscribe(function () {
+        $timeout(() => { }) // Trigger $rootScope update on the next cycle
       })
       this.client.start()
     }
@@ -82,6 +83,7 @@ class LogEntryComponentController {
 angular.module(ngBoardgameIO.moduleName, [])
   .constant('gameID', undefined)
   .constant('playerID', undefined)
+  .constant('numPlayers', 2)
   .constant('multiplayer', false)
   .constant('debug', false)
   .service('gameService', GameService)
