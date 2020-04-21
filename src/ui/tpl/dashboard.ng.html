@@ -27,13 +27,14 @@
     height: 50px;
     background-size: contain;
   }
-  i.thinking {
-    width: 24px;
-    height: 24px;
-    background-image: url(/dist/img/icons8-windows-10-50.png);
+  .status {
+    font-size: 2em;
   }
-  i.leader {
-    background-image: url(/dist/img/icons8-army-star-50.png);
+  .status.thinking::before {
+    content: '🤔';
+  }
+  .status.leader::before {
+    content: '🎖️';
   }
 </style>
 <style>
@@ -62,6 +63,3 @@
     <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>
   </re-player-list>
 </re-game>
-<footer>
-  <a target="_blank" href="https://icons8.com/icons/set/checked">Checked</a>, <a target="_blank" href="https://icons8.com/icons/set/cancel">Cancel</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a>
-</footer>
