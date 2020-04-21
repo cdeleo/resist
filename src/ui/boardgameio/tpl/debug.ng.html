@@ -59,11 +59,11 @@
 <div class="bgio-debug">
   <div>
       <h3>Players</h3>
-      <button class="player-selector" ng-repeat="p in $ctrl.client.getState().ctx.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.client.playerID">{{ p }}</button>
+      <button class="player-selector" ng-repeat="p in $ctrl.gameContext.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.gameService.playerID">{{ p }}</button>
   </div>
   <div>
       <h3>Game State</h3>
-      <pre><code>{{ $ctrl.client.getState().G | json }}</code></pre>
+      <pre><code>{{ $ctrl.gameState.G | json }}</code></pre>
   </div>
   <div>
       <h3>Moves</h3>
@@ -77,11 +77,11 @@
   </div>
   <div>
       <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>
-      <pre ng-if="$ctrl.showContext"><code>{{ $ctrl.client.getState().ctx | json }}</code></pre>
+      <pre ng-if="$ctrl.showContext"><code>{{ $ctrl.gameState.ctx | json }}</code></pre>
   </div>
   <div>
       <h3>Log</h3>
-      <div ng-if="$ctrl.client.getState().log.length == 0">No logs</div>
-      <bgio-log-entry ng-repeat="entry in $ctrl.client.getState().log" value="entry"></bgio-log-entry>
+      <div ng-if="$ctrl.gameState.log.length == 0">No logs</div>
+      <bgio-log-entry ng-repeat="entry in $ctrl.gameState.log" value="entry"></bgio-log-entry>
   </div>
 </div>
