@@ -2,7 +2,8 @@ import { ngBoardgameIO } from './boardgameio/ng.js'
 import { resistGame } from '../common/game.js'
 
 class DashboardComponent {
-  constructor(gameContext, gameState) {
+  constructor(resist, gameContext, gameState) {
+    this._resist = resist
     this._gameContext = gameContext
     this._gameState = gameState
   }
@@ -14,6 +15,9 @@ class DashboardComponent {
   }
   get currentStage() {
     return this._gameContext.currentStage
+  }
+  get faction() {
+    return this._resist.myFaction
   }
 }
 
@@ -65,6 +69,9 @@ class Resist {
     this._gameState = gameState
     this._gameContext = gameContext
     this._gameService = gameService
+  }
+  get myFaction() {
+    return this._gameState.G.roles[this._gameService.playerID].faction
   }
   get currentMissionTeamSize() {
     return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size
