@@ -1,0 +1,61 @@
+<style>
+  .bgio-debug {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 25vw;
+      min-width: 250px;
+      background: #eee;
+      box-shadow: 0 0 10px grey;
+      padding: 20px;
+      overflow: scroll;
+  }
+</style>
+<style>
+  .bgio-log-entry {
+      border-left: 4px solid;
+      padding: 5px;
+  }
+  .bgio-log-entry > .player-id {
+    font-weight: bold;
+  }
+  .bgio-log-entry > .move {
+    font-family: monospace;
+  }
+  .bgio-log-entry.MAKE_MOVE {
+      border-color: red;
+  }
+  .bgio-log-entry.GAME_EVENT {
+      border-color: blue;
+  }
+</style>
+<div class="bgio-debug">
+  <div>
+      <h3>Players</h3>
+      <button ng-repeat="p in $ctrl.client.getState().ctx.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.client.playerID">{{ p }}</button>
+  </div>
+  <div>
+      <h3>Game State</h3>
+      <pre><code>{{ $ctrl.client.getState().G | json }}</code></pre>
+  </div>
+  <div>
+      <h3>Moves</h3>
+      <div><input ng-model="$ctrl.moveArgs" placeholder="Arguments"></div>
+      <button ng-repeat="(name, _) in $ctrl.client.moves" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
+  </div>
+  <div>
+      <h3>Events</h3>
+      <div><input ng-model="$ctrl.evtArgs" placeholder="Arguments"></div>
+      <button ng-repeat="(name, _) in $ctrl.client.events" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
+  </div>
+  <div>
+      <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>
+      <pre ng-if="$ctrl.showContext"><code>{{ $ctrl.client.getState().ctx | json }}</code></pre>
+  </div>
+  <div>
+      <h3>Log</h3>
+      <div ng-if="$ctrl.client.getState().log.length == 0">No logs</div>
+      <bgio-log-entry ng-repeat="entry in $ctrl.client.getState().log" value="entry"></bgio-log-entry>
+  </div>
+</div>
