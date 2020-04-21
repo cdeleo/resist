@@ -48,6 +48,18 @@ class TeamPickComponent {
   }
 }
 
+class VoteTeamComponent {
+  constructor(resist) {
+    this._resist = resist
+  }
+  voteYay() {
+
+  }
+  voteNay() {
+
+  }
+}
+
 class Resist {
   constructor(gameState, gameContext, gameService) {
     this._gameState = gameState
@@ -89,5 +101,9 @@ angular.module('resist', [
   .component('reTeamPick', {
     'controller': TeamPickComponent,
     'templateUrl': 'tpl/team-pick.ng.html',
+  })
+  .component('reVoteTeam', {
+    'controller': VoteTeamComponent,
+    'templateUrl': 'tpl/vote-team.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])
