@@ -1,7 +1,66 @@
+<style>
+  body {
+    padding: 0;
+    margin: 0;
+  }
+</style>
+<style>
+  re-game {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  re-play-area {
+
+  }
+  re-player-list {
+    display: flex;
+    justify-content: space-evenly;
+    align-self: flex-start;
+    margin: 1em;
+  }
+</style>
+<style>
+  i {
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+  }
+  i.thinking {
+    width: 24px;
+    height: 24px;
+    background-image: url(/dist/img/icons8-windows-10-50.png);
+  }
+  i.leader {
+    background-image: url(/dist/img/icons8-army-star-50.png);
+  }
+</style>
+<style>
+  re-player {
+    border: 3px solid black;
+    border-radius: 1em;
+    display: inline-flex;
+    padding: 1em;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline-end: 1em;
+  }
+</style>
+
 <bgio-debug></bgio-debug>
 <div ng-if="$ctrl.g.state == null">
   No State
 </div>
-<div ng-if="$ctrl.g.state != null">
-  <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>
-</div>
+<re-game ng-if="$ctrl.g.state != null">
+  <re-play-area>
+
+  </re-play-area>
+  <re-player-list>
+    <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>
+  </re-player-list>
+</re-game>
+<footer>
+  <a target="_blank" href="https://icons8.com/icons/set/checked">Checked</a>, <a target="_blank" href="https://icons8.com/icons/set/cancel">Cancel</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a>
+</footer>
