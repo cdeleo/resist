@@ -2,23 +2,27 @@ import { ngBoardgameIO } from './boardgameio/ng.js'
 import { resistGame } from '../common/game.js'
 
 class DashboardComponent {
-  constructor(gameService) {
-    this.g = gameService
+  constructor(gameContext, gameState) {
+    this._gameContext = gameContext
+    this._gameState = gameState
+  }
+  get ready() {
+    return this._gameState.ready
   }
   get playerIds() {
-    return this.g.state.ctx.playOrder
+    return this._gameContext.playOrder
   }
 }
 
 class PlayerComponent {
-  constructor(gameService) {
-    this.g = gameService
+  constructor(gameContext) {
+    this._gameContext = gameContext
   }
   get isThinking() {
-    return this.g.isActive(this.playerId)
+    return this._gameContext.isActive(this.playerId)
   }
   get isLeader() {
-    return this.g.isCurrentPlayer(this.playerId)
+    return this._gameContext.isCurrentPlayer(this.playerId)
   }
 }
 

@@ -50,10 +50,10 @@
 </style>
 
 <bgio-debug></bgio-debug>
-<div ng-if="$ctrl.g.state == null">
-  No State
+<div ng-if="$ctrl.ready == null">
+  No game
 </div>
-<re-game ng-if="$ctrl.g.state != null">
+<re-game ng-if="$ctrl.ready != null">
   <re-play-area>
 
   </re-play-area>

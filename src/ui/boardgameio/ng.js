@@ -20,16 +20,6 @@ class GameService {
       this.client.start()
     }
   }
-
-  get state() {
-    return this.client.getState()
-  }
-  isActive(playerId) {
-    return playerId in (this.state.ctx.activePlayers || {})
-  }
-  isCurrentPlayer(playerId) {
-    return playerId == this.state.ctx.currentPlayer
-  }
 }
 
 class DebugComponentController {
@@ -101,6 +91,36 @@ class LogEntryComponentController {
   }
 }
 
+class GameState {
+  constructor(gameService) {
+    this._client = gameService.client
+  }
+  get G() {
+    return this._client.getState().G
+  }
+  get ready() {
+    return Boolean(this._client.getState())
+  }
+}
+
+class GameContext {
+  constructor(gameService) {
+    this._client = gameService.client
+  }
+  get ctx() {
+    return this._client.getState().ctx
+  }
+  get playOrder() {
+    return this.ctx.playOrder
+  }
+  isActive(playerId) {
+    return playerId in (this.ctx.activePlayers || {})
+  }
+  isCurrentPlayer(playerId) {
+    return playerId == this.ctx.currentPlayer
+  }
+}
+
 angular.module(ngBoardgameIO.moduleName, [])
   .constant('gameID', undefined)
   .constant('playerID', undefined)
@@ -108,6 +128,8 @@ angular.module(ngBoardgameIO.moduleName, [])
   .constant('multiplayer', false)
   .constant('debug', false)
   .service('gameService', GameService)
+  .service('gameState', GameState)
+  .service('gameContext', GameContext)
 
 angular.module(ngBoardgameIO.debugModuleName, [ngBoardgameIO.moduleName])
   .component('bgioDebug', {
