@@ -42,6 +42,14 @@ class DebugComponentController {
     this.client.updatePlayerID(playerID)
   }
 
+  get moveNames() {
+    return Object.keys(this.client.moves)
+  }
+
+  get eventNames() {
+    return Object.keys(this.client.events)
+  }
+
   makeMove(moveName) {
     this._execute(this.client.moves[moveName], this.moveArgs)
   }

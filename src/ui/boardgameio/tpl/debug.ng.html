@@ -11,12 +11,25 @@
       padding: 20px;
       overflow: scroll;
   }
-  .bgio-debug .player-selector {
+  .bgio-debug input {
+    padding: 6px;
+    border: 1px solid grey;
+    border-radius: 4px;
+  }
+  .bgio-debug button {
     padding: .5em;
+    border: 2px solid teal;
     background: teal;
-    border: 4px solid teal;
     border-radius: 4px;
     color: white;
+    margin-inline-end: .25em;
+    font-weight: 500;
+    margin-bottom: .25em;
+    font-variant: small-caps;
+  }
+  .bgio-debug .player-selector {
+    background: teal;
+    border: 4px solid teal;
     font-size: 1.2em;
     font-weight: bold;
     margin-inline-end: .25em;
@@ -55,12 +68,12 @@
   <div>
       <h3>Moves</h3>
       <div><input ng-model="$ctrl.moveArgs" placeholder="Arguments"></div>
-      <button ng-repeat="(name, _) in $ctrl.client.moves" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
+      <button ng-repeat="name in $ctrl.moveNames | orderBy:'+'" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Events</h3>
       <div><input ng-model="$ctrl.evtArgs" placeholder="Arguments"></div>
-      <button ng-repeat="(name, _) in $ctrl.client.events" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
+      <button ng-repeat="name in $ctrl.eventNames | orderBy:'+'" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>
