@@ -59,7 +59,11 @@
 <div class="bgio-debug">
   <div>
       <h3>Players</h3>
-      <button class="player-selector" ng-repeat="p in $ctrl.gameContext.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.gameService.playerID">{{ p }}</button>
+      <button
+          class="player-selector"
+          ng-repeat="p in $ctrl.gameContext.playOrder"
+          ng-click="$ctrl.updatePlayerID(p)"
+          ng-disabled="p == $ctrl.gameService.playerID">{{ p }}</button>
   </div>
   <div>
       <h3>Game State</h3>
@@ -68,12 +72,16 @@
   <div>
       <h3>Moves</h3>
       <div><input ng-model="$ctrl.moveArgs" placeholder="Arguments"></div>
-      <button ng-repeat="name in $ctrl.moveNames | orderBy:'+'" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
+      <button
+          ng-repeat="name in $ctrl.moveNames | orderBy:'+'"
+           ng-click="$ctrl.makeMove(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Events</h3>
       <div><input ng-model="$ctrl.evtArgs" placeholder="Arguments"></div>
-      <button ng-repeat="name in $ctrl.eventNames | orderBy:'+'" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
+      <button
+          ng-repeat="name in $ctrl.eventNames | orderBy:'+'"
+          ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>
