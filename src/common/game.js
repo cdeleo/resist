@@ -2,9 +2,9 @@ import * as Moves from './moves.js';
 
 export const ResistGame = {
     turn: {
-        // activePlayers: {
-        //     currentPlayer: 'proposeTeam',
-        // },
+        activePlayers: {
+            currentPlayer: 'proposeTeam',
+        },
         stages: {
             proposeTeam: {
                 moves: { proposeTeam: Moves.proposeTeam },
