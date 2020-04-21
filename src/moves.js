@@ -1,15 +1,15 @@
-exports.proposeTeam = (G, ctx, team) => {
+export function proposeTeam(G, ctx, team) {
     G.team = team;
-};
-
-exports.teamVote = (G, ctx, vote) => {
-    G.teamVotes[ctx.currentPlayer] = vote;
-};
-
-exports.missionVote = (G, ctx, vote) => {
-    G.missionVotes[ctx.currentPlayer] = vote;
-};
-
-exports.continue = (G, ctx) => {
-    ctx.endStage();
 }
+
+export function teamVote(G, ctx, vote) {
+    G.teamVotes[ctx.currentPlayer] = vote;
+}
+
+export function missionVote(G, ctx, vote) {
+    G.missionVotes[ctx.currentPlayer] = vote;
+}
+
+export function endReview(G, ctx) {
+    ctx.endStage();
+};

@@ -1,25 +1,25 @@
-const moves = require('./moves');
+import * as Moves from './moves.js';
 
-exports.ResistGame = {
+export const ResistGame = {
     turn: {
         // activePlayers: {
         //     currentPlayer: 'proposeTeam',
         // },
         stages: {
             proposeTeam: {
-                moves: { proposeTeam: moves.proposeTeam },
+                moves: { proposeTeam: Moves.proposeTeam },
             },
             voteOnTeam: {
-                moves: { teamVote: moves.teamVote },
+                moves: { teamVote: Moves.teamVote },
             },
             reviewTeam: {
-                moves: { continue: moves.continue },
+                moves: { endReview: Moves.endReview },
             },
             mission: {
-                moves: { missionVote: moves.missionVote },
+                moves: { missionVote: Moves.missionVote },
             },
             reviewMission: {
-                moves: { continue: moves.continue },
+                moves: { endReview: Moves.endReview },
             },
         }
     }

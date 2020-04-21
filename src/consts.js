@@ -1,8 +1,8 @@
-exports.RESISTANCE = "resistance";
-exports.SPY = "spy";
+export const RESISTANCE = "resistance";
+export const SPY = "spy";
 
-exports.YES = "yes";
-exports.NO = "no";
+export const YES = "yes";
+export const NO = "no";
 
-exports.PASS = "pass";
-exports.FAIL = "fail";
+export const PASS = "pass";
+export const FAIL = "fail";
