@@ -1,4 +1,5 @@
 import { ngBoardgameIO } from './boardgameio/ng.js'
+import { resistGame } from '../common/game.js'
 
 class DashboardComponent {
   constructor(gameService) {
@@ -28,14 +29,7 @@ angular.module('resist', [
   .constant('gameID', 'default')
   .constant('playerID', '1')
   .constant('multiplayer', BoardgameIO.Local())
-  .constant('game', {
-    'setup': () => ({ cells: Array(9).fill(null) }),
-    'moves': {
-      clickCell(G, ctx, id) {
-        G.cells[id] = ctx.currentPlayer
-      },
-    },
-  })
+  .constant('game', resistGame)
   .component('reDash', {
     'controller': DashboardComponent,
     'templateUrl': 'tpl/dashboard.ng.html',
