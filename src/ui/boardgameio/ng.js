@@ -52,16 +52,37 @@ class DebugComponentController {
   }
 
   makeMove(moveName) {
-    this._execute(this.client.moves[moveName], this.moveArgs)
+    try {
+      this._execute(this.client.moves[moveName], this.moveArgs)
+    } catch (e) {
+      this._createLogEntry('ERROR', `BadMove: ${moveName}`, this.moveArgs)
+    }
   }
 
   triggerEvent(eventName) {
-    this._execute(this.client.events[eventName], this.evtArgs)
+    try {
+      this._execute(this.client.events[eventName], this.evtArgs)
+    } catch (e) {
+      this._createLogEntry('ERROR', `BadEvent: ${eventName}`, this.eventArgs)
+    }
   }
 
   /** Parses [argsAsJsonArrayString] and then dynamically applies the result to a fn. */
   _execute(fn, argsAsJsonArrayString) {
     fn.apply(null, JSON.parse(`[${argsAsJsonArrayString}]`))
+  }
+
+  _createLogEntry(type, payloadType, args) {
+    this.client.log.push({
+      action: {
+        type,
+        payload: {
+          playerID: this.client.playerID,
+          type: payloadType,
+          args
+        }
+      }
+    })
   }
 }
 
