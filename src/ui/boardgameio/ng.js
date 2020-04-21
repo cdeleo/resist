@@ -130,7 +130,8 @@ class GameState {
 }
 
 class GameContext {
-  constructor(gameState) {
+  constructor(gameService, gameState) {
+    this._gameService = gameService
     this._gameState = gameState
   }
   get ctx() {
@@ -138,6 +139,9 @@ class GameContext {
   }
   get playOrder() {
     return this.ctx.playOrder
+  }
+  get currentStage() {
+    return this.ctx.activePlayers[this._gameService.playerID]
   }
   isActive(playerId) {
     return playerId in (this.ctx.activePlayers || {})

@@ -1,0 +1,21 @@
+<style>
+  .recruit {
+    font-size: 2em;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+  }
+  .recruit.selected {
+    background-color: green;
+    color: white;
+  }
+</style>
+<div>
+  <div>Pick {{ $ctrl.teamSize }} recruits:</div>
+  <button
+      class="recruit"
+      ng-class="{'selected': $ctrl.team.has(p)}"
+      ng-click="$ctrl.pick(p)"
+      ng-repeat="p in $ctrl.players">{{ p }}</button>
+  <button ng-click="$ctrl.submit()">Submit</button>
+</div>

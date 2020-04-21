@@ -12,6 +12,9 @@ class DashboardComponent {
   get playerIds() {
     return this._gameContext.playOrder
   }
+  get currentStage() {
+    return this._gameContext.currentStage
+  }
 }
 
 class PlayerComponent {
@@ -26,6 +29,42 @@ class PlayerComponent {
   }
 }
 
+class TeamPickComponent {
+  constructor(resist) {
+    this._resist = resist
+    this.teamSize = resist.currentMissionTeamSize
+    this.players = resist.players
+    this.team = new Set()
+  }
+  pick(playerID) {
+    if (this.team.has(playerID)) {
+      this.team.delete(playerID)
+    } else if (this.team.size < this.teamSize) {
+      this.team.add(playerID)
+    }
+  }
+  submit() {
+    this._resist.proposeTeam(Array.from(this.team))
+  }
+}
+
+class Resist {
+  constructor(gameState, gameContext, gameService) {
+    this._gameState = gameState
+    this._gameContext = gameContext
+    this._gameService = gameService
+  }
+  get currentMissionTeamSize() {
+    return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size
+  }
+  get players() {
+    return this._gameContext.playOrder
+  }
+  proposeTeam(team) {
+    this._gameService.moves.proposeTeam(team)
+  }
+}
+
 angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
@@ -35,6 +74,7 @@ angular.module('resist', [
   .constant('numPlayers', 5)
   .constant('multiplayer', BoardgameIO.Local())
   .constant('game', resistGame())
+  .service('resist', Resist)
   .component('reDash', {
     'controller': DashboardComponent,
     'templateUrl': 'tpl/dashboard.ng.html',
@@ -45,5 +85,9 @@ angular.module('resist', [
     'bindings': {
       'playerId': '<',
     },
+  })
+  .component('reTeamPick', {
+    'controller': TeamPickComponent,
+    'templateUrl': 'tpl/team-pick.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])
