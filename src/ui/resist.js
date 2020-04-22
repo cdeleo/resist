@@ -103,18 +103,14 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults
-    const totalProgress = Array(5).fill("-", results.length, 5)
-    results.forEach((result, i) => {
-      totalProgress[i] = result == Consts.PASS ? 'Pass' : 'Fail'
-    })
-    return totalProgress
+    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? 'O' : 'X')
+    const notYetRun = Array(5 - results.length).fill('-')
+    return [...results, ...notYetRun]
   }
   get teamProposals() {
-    const voteNumber = this._gameState.G.voteNumber
-    const totalProgress = Array(5).fill("-")
-    totalProgress[voteNumber] = voteNumber
-    return totalProgress
+    const failedVotes = Array(this._gameState.G.voteNumber).fill('X')
+    const notYetVoted = Array(4 - failedVotes.length).fill('-')
+    return [...failedVotes, 'O', ...notYetVoted]
   }
 }
 
