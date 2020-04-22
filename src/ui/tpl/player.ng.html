@@ -1,3 +1,5 @@
-<span>Player {{ $ctrl.playerId }}</span>
-<span class="status thinking" ng-if="$ctrl.isThinking"></span>
-<span class="status leader" ng-if="$ctrl.isLeader">️</span>
+<div class="card" ng-class="$ctrl.faction">
+  <span>Player {{ $ctrl.playerId }}</span>
+  <span class="status thinking" ng-if="$ctrl.isThinking"></span>
+  <span class="status leader" ng-if="$ctrl.isLeader">️</span>
+</div>

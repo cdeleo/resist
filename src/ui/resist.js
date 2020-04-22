@@ -23,14 +23,18 @@ class DashboardComponent {
 }
 
 class PlayerComponent {
-  constructor(gameContext) {
+  constructor(gameContext, resist) {
     this._gameContext = gameContext
+    this._resist = resist
   }
   get isThinking() {
     return this._gameContext.isActive(this.playerId)
   }
   get isLeader() {
     return this._gameContext.isCurrentPlayer(this.playerId)
+  }
+  get faction() {
+    return this._resist.getPlayerFaction(this.playerId)
   }
 }
 
@@ -72,13 +76,16 @@ class Resist {
     this._gameService = gameService
   }
   get myFaction() {
-    return this._gameState.G.roles[this._gameService.playerID].faction
+    return this.getPlayerFaction(this._gameService.playerID)
   }
   get currentMissionTeamSize() {
     return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size
   }
   get players() {
     return this._gameContext.playOrder
+  }
+  getPlayerFaction(playerID) {
+    return this._gameState.G.roles[playerID].faction
   }
   proposeTeam(team) {
     this._gameService.moves.proposeTeam(team)
