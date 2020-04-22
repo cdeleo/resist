@@ -89,6 +89,15 @@ function fillFactionList(factions) {
     ];
 }
 
+function resetState(G) {
+    return {
+        missionProgression: G.missionProgression,
+        roles: G.roles,
+        missionResults: G.missionResults,
+        voteNumber: G.voteNumber,
+    };
+}
+
 export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
     return {
         setup(ctx) {
@@ -106,6 +115,7 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
             };
         },
         turn: {
+            onEnd: resetState,
             activePlayers: {
                 currentPlayer: 'proposeTeam',
             },

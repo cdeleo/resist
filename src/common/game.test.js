@@ -83,6 +83,20 @@ describe('initial state', () => {
         expect(G.missionResults).toEqual([]);
         expect(G.voteNumber).toEqual(0);
     });
+
+    it('strips existing state beyond minimal', () => {
+        const client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
+            },
+            { '0': 'reviewMission' }
+        );
+        client.events.endTurn();
+        const { G, ctx } = client.store.getState();
+        expect(G).toEqual(BASE_STATE);
+    })
 });
 
 describe('proposeTeam move', () => {
