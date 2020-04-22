@@ -131,8 +131,14 @@ class Resist {
     }
     return votes[playerID]
   }
+  get roles() {
+    return this._gameState.G.roles || {}
+  }
+  getPlayerRole(playerID) {
+    return this.roles[playerID] || {}
+  }
   getPlayerFaction(playerID) {
-    return this._gameState.G.roles[playerID].faction
+    return this.getPlayerRole(playerID).faction
   }
   proposeTeam(team) {
     this._gameService.moves.proposeTeam(team)
