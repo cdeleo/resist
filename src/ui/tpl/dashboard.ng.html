@@ -65,10 +65,13 @@
 </style>
 
 <bgio-debug></bgio-debug>
-<div ng-if="$ctrl.ready == null">
+<div ng-if="!$ctrl.ready">
   No game
 </div>
-<re-game ng-if="$ctrl.ready != null" ng-class="$ctrl.faction">
+<div ng-if="$ctrl.gameover">
+  {{ $ctrl.gameover.winner }} wins
+</div>
+<re-game ng-if="$ctrl.ready && !$ctrl.gameover" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
   <re-team></re-team>
   <re-team-votes></re-team-votes>

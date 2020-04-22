@@ -20,6 +20,9 @@ class DashboardComponent {
   get faction() {
     return this._resist.myFaction
   }
+  get gameover() {
+    return this._gameContext.gameover
+  }
 }
 
 class PlayerComponent {
