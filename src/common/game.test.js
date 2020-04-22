@@ -40,6 +40,22 @@ function configureClient(extraState, initialPhases) {
     return client;
 }
 
+function ignoreErrorPrefixes(prefixes) {
+    const result = { ignored: false };
+    console.error.mockImplementation((...args) => {
+        if (args.some(arg => prefixes.some(prefix => arg.startsWith(prefix)))) {
+            result.ignored = true;
+        } else {
+            console.log(args); console._error(...args);
+        }
+    });
+    return result;
+}
+
+beforeEach(() => {
+    ignoreErrorPrefixes([]);
+});
+
 describe('initial state', () => {
 
     it('starts in proposeTeam', () => {
@@ -83,14 +99,18 @@ describe('proposeTeam move', () => {
     });
 
     it('requires correct team size', () => {
+        const errors = ignoreErrorPrefixes(["invalid move: proposeTeam"]);
         client.moves.proposeTeam(['0']);
         const { G, ctx } = client.store.getState();
         expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(errors.ignored).toBeTruthy();
     });
 
     it('requires valid players', () => {
+        const errors = ignoreErrorPrefixes(["invalid move: proposeTeam"]);
         client.moves.proposeTeam(['0', 'somethingElse']);
         const { G, ctx } = client.store.getState();
         expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(errors.ignored).toBeTruthy();
     });
 });
