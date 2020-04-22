@@ -129,6 +129,15 @@ class DotsAndNumberComponent {
   }
 }
 
+class TeamComponent {
+  constructor(gameState) {
+    this._gameState = gameState
+  }
+  get teamMembers() {
+    return this._gameState.G.team
+  }
+}
+
 angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
@@ -165,5 +174,9 @@ angular.module('resist', [
   .component('reDotsAndNumber', {
     'controller': DotsAndNumberComponent,
     'templateUrl': 'tpl/dots-and-number.ng.html',
+  })
+  .component('reTeam', {
+    'controller': TeamComponent,
+    'templateUrl': 'tpl/team.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])

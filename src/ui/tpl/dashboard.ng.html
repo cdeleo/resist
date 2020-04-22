@@ -70,6 +70,7 @@
 </div>
 <re-game ng-if="$ctrl.ready != null" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
+  <re-team></re-team>
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="proposeTeam"></re-team-pick>
     <re-vote-team ng-switch-when="voteOnTeam"></re-vote-team>
