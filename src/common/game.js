@@ -111,6 +111,65 @@ function determineWinner(G) {
     }
 }
 
+function sanitizeMap(map, predicate) {
+    if (!map) {
+        return map;
+    }
+    const sanitizedMap = {}
+    for (let [targetID, data] of Object.entries(map)) {
+        if (predicate(targetID)) {
+            sanitizedMap[targetID] = data;
+        }
+    }
+    return sanitizedMap;
+}
+
+function isPlayerASpy(playerID, G) {
+    return G && G.roles && G.roles[playerID] && G.roles[playerID].faction == Consts.SPY;
+}
+
+function isRoleVisible(viewerID, targetID, G) {
+    if (viewerID == targetID) {
+        return true;
+    }
+    if (isPlayerASpy(viewerID, G) && isPlayerASpy(targetID, G)) {
+        return true;
+    }
+    return false;
+}
+
+function isAnyPlayerInStage(stage, ctx) {
+    if (!ctx.activePlayers) {
+        return false;
+    }
+    return Object.values(ctx.activePlayers).some(playerStage => playerStage == stage);
+}
+
+function aggregateMissionVotes(missionVotes) {
+    const missionVotesShuffled = {};
+    for (let missionVote of Object.values(missionVotes)) {
+        missionVotesShuffled[missionVote] = (missionVotesShuffled[missionVote] || 0) + 1;
+    }
+    return missionVotesShuffled;
+}
+
+export function sanitizeState(G, ctx, playerID) {
+    const sanitizedG = {
+        missionProgression: G.missionProgression,
+        roles: sanitizeMap(G.roles, targetID => isRoleVisible(playerID, targetID, G)),
+        missionResults: G.missionResults,
+        voteNumber: G.voteNumber,
+        team: G.team,
+        teamVotes: isAnyPlayerInStage('teamVote', ctx) ?
+            sanitizeMap(G.teamVotes, targetID => targetID == playerID) : G.teamVotes,
+        missionVotes: sanitizeMap(G.missionVotes, targetID => targetID == playerID),
+    };
+    if (G.missionVotes && !isAnyPlayerInStage('mission', ctx)) {
+        sanitizedG.missionVotesShuffled = aggregateMissionVotes(G.missionVotes);
+    }
+    return sanitizedG;
+}
+
 export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
     return {
         setup(ctx) {
@@ -127,6 +186,7 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
                 voteNumber: 0,
             };
         },
+        playerView: sanitizeState,
         turn: {
             onEnd: resetState,
             activePlayers: {
