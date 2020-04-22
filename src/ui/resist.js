@@ -69,7 +69,7 @@ class VoteTeamComponent {
   }
 }
 
-class MissionVoteComponent {
+class VoteMissionComponent {
   constructor(resist) {
     this._resist = resist
   }
@@ -77,10 +77,10 @@ class MissionVoteComponent {
     return this._resist.myFaction == Consts.SPY
   }
   voteYay() {
-    this._resist.vote(Consts.YES)
+    this._resist.perform(Consts.PASS)
   }
   voteNay() {
-    this._resist.vote(Consts.NO)
+    this._resist.perform(Consts.FAIL)
   }
 }
 
@@ -108,6 +108,9 @@ class Resist {
   vote(decision) {
     this._gameService.moves.teamVote(decision)
   }
+  perform(performance) {
+    this._gameService.moves.missionVote(performance)
+  }
 }
 
 class DotsAndNumberComponent {
@@ -115,14 +118,14 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? 'O' : 'X')
+    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '✅' : '💣')
     const notYetRun = Array(5 - results.length).fill('-')
     return [...results, ...notYetRun]
   }
   get teamProposals() {
-    const failedVotes = Array(this._gameState.G.voteNumber).fill('X')
+    const failedVotes = Array(this._gameState.G.voteNumber).fill('⚫')
     const notYetVoted = Array(4 - failedVotes.length).fill('-')
-    return [...failedVotes, 'O', ...notYetVoted]
+    return [...failedVotes, '🗳️', ...notYetVoted]
   }
 }
 
@@ -154,6 +157,10 @@ angular.module('resist', [
   .component('reVoteTeam', {
     'controller': VoteTeamComponent,
     'templateUrl': 'tpl/vote-team.ng.html',
+  })
+  .component('reVoteMission', {
+    'controller': VoteMissionComponent,
+    'templateUrl': 'tpl/vote-mission.ng.html',
   })
   .component('reDotsAndNumber', {
     'controller': DotsAndNumberComponent,
