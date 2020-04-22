@@ -47,6 +47,9 @@ class PlayerComponent {
     if (!vote) return ''
     return vote == Consts.YES ? 'yay' : 'nay'
   }
+  get isMe() {
+    return this._resist.myPlayerID == this.playerId
+  }
 }
 
 class TeamPickComponent {
@@ -105,8 +108,11 @@ class Resist {
     this._gameService = gameService
     this._numPlayers = numPlayers
   }
+  get myPlayerID() {
+    return this._gameService.playerID
+  }
   get myFaction() {
-    return this.getPlayerFaction(this._gameService.playerID)
+    return this.getPlayerFaction(this.myPlayerID)
   }
   get currentMissionTeamSize() {
     return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size

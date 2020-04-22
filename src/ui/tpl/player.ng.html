@@ -1,4 +1,4 @@
-<div class="card" ng-class="$ctrl.faction">
+<div class="card" ng-class="[$ctrl.faction, {me: $ctrl.isMe}]">
   <span>Player {{ $ctrl.playerId }}</span>
   <span class="status vote" ng-class="$ctrl.teamVote"></span>
   <span class="status thinking" ng-if="$ctrl.isThinking"></span>
