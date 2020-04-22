@@ -163,8 +163,9 @@ export function sanitizeState(G, ctx, playerID) {
         teamVotes: isAnyPlayerInStage('teamVote', ctx) ?
             sanitizeMap(G.teamVotes, targetID => targetID == playerID) : G.teamVotes,
         missionVotes: sanitizeMap(G.missionVotes, targetID => targetID == playerID),
+        missionVotesShuffled: G.missionVotesShuffled,
     };
-    if (G.missionVotes && !isAnyPlayerInStage('mission', ctx)) {
+    if (G.missionVotes && !G.missionVotesShuffled && !isAnyPlayerInStage('mission', ctx)) {
         sanitizedG.missionVotesShuffled = aggregateMissionVotes(G.missionVotes);
     }
     return sanitizedG;
