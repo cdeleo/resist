@@ -48,9 +48,12 @@ class TeamPickComponent {
   pick(playerID) {
     if (this.team.has(playerID)) {
       this.team.delete(playerID)
-    } else if (this.team.size < this.teamSize) {
+    } else if (!this.isFullTeam) {
       this.team.add(playerID)
     }
+  }
+  get isFullTeam() {
+    return this.team.size >= this.teamSize
   }
   submit() {
     this._resist.proposeTeam(Array.from(this.team))
@@ -118,7 +121,7 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '✅' : '💣')
+    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '🎂' : '💣')
     const notYetRun = Array(5 - results.length).fill('-')
     return [...results, ...notYetRun]
   }

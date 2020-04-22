@@ -17,5 +17,5 @@
       ng-class="{'selected': $ctrl.team.has(p)}"
       ng-click="$ctrl.pick(p)"
       ng-repeat="p in $ctrl.players">{{ p }}</button>
-  <button ng-click="$ctrl.submit()">Submit</button>
+  <button ng-click="$ctrl.submit()" ng-disabled="!$ctrl.isFullTeam">Submit</button>
 </div>
