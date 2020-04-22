@@ -209,6 +209,19 @@ class ReviewMissionComponent {
   }
 }
 
+class MissionResultsComponent {
+  constructor(gameState) {
+    this._gameState = gameState
+  }
+  get results() {
+    const results = this._gameState.G.missionVotesShuffled || {}
+    return [
+      ...Array(results[Consts.PASS] || 0).fill('👍'),
+      ...Array(results[Consts.FAIL] || 0).fill('👎')
+    ]
+  }
+}
+
 const hash = location.hash.substr(1).split(';')
 const playerId = hash.pop()
 const gameId = hash.pop()
@@ -265,5 +278,9 @@ angular.module('resist', [
   .component('reTeam', {
     'controller': TeamComponent,
     'templateUrl': 'tpl/team.ng.html',
+  })
+  .component('reMissionResults', {
+    'controller': MissionResultsComponent,
+    'templateUrl': 'tpl/mission-results.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])

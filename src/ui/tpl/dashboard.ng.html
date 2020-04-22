@@ -41,6 +41,31 @@
   }
 </style>
 <style>
+  re-mission-results {
+    display: inline-flex;
+    font-size: 4em;
+  }
+  re-mission-results .result {
+    opacity: 0;
+    animation: fadeIn ease 2s;
+    animation-fill-mode: forwards;
+  }
+  re-mission-results .result:nth-child(2) {
+    animation-delay: 2s;
+  }
+  re-mission-results .result:nth-child(3) {
+    animation-delay: 4s;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
+</style>
+<style>
   re-team-pick {
     display: flex;
     flex-direction: column;
@@ -166,6 +191,7 @@
 </div>
 <re-game ng-if="$ctrl.ready && !$ctrl.gameover" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
+  <re-mission-results></re-mission-results>
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="teamProposal"></re-team-pick>
     <re-vote-team ng-switch-when="teamVote"></re-vote-team>
