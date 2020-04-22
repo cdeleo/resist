@@ -39,6 +39,17 @@ class PlayerComponent {
   get faction() {
     return this._resist.getPlayerFaction(this.playerId)
   }
+  get isOnCurrentTeam() {
+    return this._resist.isPlayerOnTeam(this.playerId)
+  }
+  get teamVote() {
+    const vote = this._resist.getPlayerTeamVote(this.playerId)
+    if (!vote) return ''
+    return vote == Consts.YES ? 'yay' : 'nay'
+  }
+  get isMe() {
+    return this._resist.myPlayerID == this.playerId
+  }
 }
 
 class TeamPickComponent {
@@ -91,13 +102,17 @@ class VoteMissionComponent {
 }
 
 class Resist {
-  constructor(gameState, gameContext, gameService) {
+  constructor(gameState, gameContext, gameService, numPlayers) {
     this._gameState = gameState
     this._gameContext = gameContext
     this._gameService = gameService
+    this._numPlayers = numPlayers
+  }
+  get myPlayerID() {
+    return this._gameService.playerID
   }
   get myFaction() {
-    return this.getPlayerFaction(this._gameService.playerID)
+    return this.getPlayerFaction(this.myPlayerID)
   }
   get currentMissionTeamSize() {
     return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size
@@ -105,8 +120,25 @@ class Resist {
   get players() {
     return this._gameContext.playOrder
   }
+  isPlayerOnTeam(playerID) {
+    if (!this._gameState.G.team) return false
+    return this._gameState.G.team.find(t => t == playerID)
+  }
+  getPlayerTeamVote(playerID) {
+    const votes = this._gameState.G.teamVotes
+    if (!votes || Object.keys(votes).length != this._numPlayers) {
+      return null
+    }
+    return votes[playerID]
+  }
+  get roles() {
+    return this._gameState.G.roles || {}
+  }
+  getPlayerRole(playerID) {
+    return this.roles[playerID] || {}
+  }
   getPlayerFaction(playerID) {
-    return this._gameState.G.roles[playerID].faction
+    return this.getPlayerRole(playerID).faction
   }
   proposeTeam(team) {
     this._gameService.moves.proposeTeam(team)
@@ -124,13 +156,14 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '🎂' : '💣')
+    const results = this._gameState.G.missionResults
+      .map(r => r == Consts.PASS ? '🎂' : '💣')
     const notYetRun = Array(5 - results.length).fill('-')
     return [...results, ...notYetRun]
   }
   get teamProposals() {
     const failedVotes = Array(this._gameState.G.voteNumber).fill('⚫')
-    const notYetVoted = Array(4 - failedVotes.length).fill('-')
+    const notYetVoted = Array(Math.max(0, 4 - failedVotes.length)).fill('-')
     return [...failedVotes, '🗳️', ...notYetVoted]
   }
 }

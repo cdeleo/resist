@@ -140,11 +140,14 @@ class GameContext {
   get playOrder() {
     return this.ctx.playOrder
   }
+  get activePlayers() {
+    return this.ctx.activePlayers || []
+  }
   get currentStage() {
-    return this.ctx.activePlayers[this._gameService.playerID]
+    return this.activePlayers[this._gameService.playerID]
   }
   isActive(playerId) {
-    return playerId in (this.ctx.activePlayers || {})
+    return playerId in this.activePlayers
   }
   isCurrentPlayer(playerId) {
     return playerId == this.ctx.currentPlayer

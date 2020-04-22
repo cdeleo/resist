@@ -2,6 +2,10 @@
   body {
     padding: 0;
     margin: 0;
+    font-family: 'Allerta Stencil', sans-serif;
+  }
+  button {
+    font-family: 'Allerta Stencil', sans-serif;
   }
 </style>
 <style>
@@ -10,25 +14,69 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    background-color: lightgray;
   }
-
   re-game.spy {
     background-color: black;
     color: white;
   }
 
-  re-play-area {}
-
   re-player-list {
     display: flex;
     justify-content: space-evenly;
-    align-self: flex-start;
     margin: 1em;
   }
 </style>
 <style>
+  re-dots-and-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   re-dots-and-number .results {
-    display: inline-flex;
+    display: flex;
+    font-size: 8em;
+    font-family: monospace;
+  }
+</style>
+<style>
+  re-team-pick {
+    display: flex;
+    flex-direction: column;
+  }
+  .recruits {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  .recruit {
+    font-size: 2em;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+  .recruit.selected {
+    background-color: green;
+    color: white;
+  }
+</style>
+<style>
+  button.submit {
+    display: block;
+    font-size: 2em;
+    padding: 2em;
+    border-radius: 1em;
+    background-color: teal;
+    border: 2px solid white;
+    color: white;
+  }
+  button.submit:active {
+    background-color: darkslategray;
+  }
+  button.submit:disabled {
+    background-color: darkslategray;
+    color: grey;
   }
 </style>
 <style>
@@ -49,6 +97,42 @@
   .status.leader::before {
     content: '🎖️';
   }
+
+  .status.member::before {
+    content: '👥';
+  }
+
+  .status.vote {
+    display: none;
+  }
+
+  .status.vote.nay, .status.vote.yay {
+    display: inherit;
+  }
+
+  .status.vote.yay::before {
+    content: '👍';
+  }
+
+  .status.vote.nay::before {
+    content: '👎';
+  }
+</style>
+<style>
+  button.vote {
+    font-size: 2em;
+    height: 4em;
+    width: 4em;
+    border-radius: 50%;
+    color: white;
+    border: 2px solid white;
+  }
+  button.vote.yay {
+    background-color: green;
+  }
+  button.vote.nay {
+    background-color: red;
+  }
 </style>
 <style>
   re-player .card {
@@ -62,6 +146,10 @@
     align-items: center;
     justify-content: space-between;
     margin-inline-end: 1em;
+  }
+
+  re-player .card.me {
+    border-color: teal;
   }
 
   re-player .card.spy {
@@ -78,8 +166,6 @@
 </div>
 <re-game ng-if="$ctrl.ready && !$ctrl.gameover" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
-  <re-team></re-team>
-  <re-team-votes></re-team-votes>
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="teamProposal"></re-team-pick>
     <re-vote-team ng-switch-when="teamVote"></re-vote-team>

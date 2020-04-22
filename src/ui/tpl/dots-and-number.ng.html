@@ -1,4 +1,6 @@
-<div>
-  <div class="results mission" ng-repeat="result in $ctrl.missionResults track by $index">{{ result }}</div>
-  <div class="results proposal" ng-repeat="result in $ctrl.teamProposals track by $index">{{ result }}</div>
+<div class="results mission">
+  <div class="result" ng-repeat="result in $ctrl.missionResults track by $index">{{ result }}</div>
+</div>
+<div class="results proposal">
+  <div class="result" ng-repeat="result in $ctrl.teamProposals track by $index">{{ result }}</div>
 </div>
