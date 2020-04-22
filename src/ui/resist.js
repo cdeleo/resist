@@ -112,10 +112,10 @@ class Resist {
     this._gameService.moves.proposeTeam(team)
   }
   vote(decision) {
-    this._gameService.moves.teamVote(decision)
+    this._gameService.moves.voteOnTeam(decision)
   }
   perform(performance) {
-    this._gameService.moves.missionVote(performance)
+    this._gameService.moves.voteOnMission(performance)
   }
 }
 
