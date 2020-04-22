@@ -149,7 +149,7 @@ describe('teamVote move', () => {
         );
         client.moves.teamVote(Consts.YES);
         const { G, ctx } = client.store.getState();
-        //expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO, '2': Consts.NO });
+        expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO, '2': Consts.NO });
         //expect(ctx.activePlayers).toEqual({ '0': 'reviewTeam' });
     });
 
@@ -188,6 +188,63 @@ describe('endTeamReview move', () => {
         );
         client.moves.endTeamReview();
         const { G, ctx } = client.store.getState();
+        expect(G.missionVotes).toBeDefined();
         expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
+    });
+});
+
+describe('missionVote move', () => {
+    let client;
+
+    beforeEach(() => {
+        client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: {},
+            },
+            { '0': 'mission', '1': 'mission' }
+        );
+    });
+
+
+    it('submits vote and ends stage for player', () => {
+        client.moves.missionVote(Consts.PASS);
+        const { G, ctx } = client.store.getState();
+        expect(G.missionVotes).toEqual({ '0': Consts.PASS });
+        expect(ctx.activePlayers).toEqual({ '1': 'mission' });
+    });
+
+    it('advances to reviewMission stage when all votes are submitted', () => {
+        client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '1': Consts.FAIL },
+            },
+            { '0': 'mission' }
+        );
+        client.moves.missionVote(Consts.PASS);
+        const { G, ctx } = client.store.getState();
+        expect(G.missionVotes).toEqual({ '0': Consts.PASS, '1': Consts.FAIL });
+        //expect(ctx.activePlayers).toEqual({ '0': 'reviewMission' });
+    });
+
+    it('requires valid vote', () => {
+        const errors = ignoreErrorPrefixes(["invalid move: missionVote"]);
+        client.moves.missionVote("somethingElse");
+        const { G, ctx } = client.store.getState();
+        expect(G.missionVotes).toEqual({});
+        expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
+        expect(errors.ignored).toBeTruthy();
+    });
+
+    it('requires resistance members to pass', () => {
+        const errors = ignoreErrorPrefixes(["invalid move: missionVote"]);
+        client.moves.missionVote(Consts.FAIL);
+        const { G, ctx } = client.store.getState();
+        expect(G.missionVotes).toEqual({});
+        expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
+        expect(errors.ignored).toBeTruthy();
     });
 });

@@ -41,7 +41,14 @@ export function endTeamReview(G, ctx) {
 };
 
 export function missionVote(G, ctx, vote) {
+    if (vote != Consts.PASS && vote != Consts.FAIL) {
+        return INVALID_MOVE;
+    }
+    if (G.roles[ctx.playerID].faction == Consts.RESISTANCE && vote == Consts.FAIL) {
+        return INVALID_MOVE;
+    }
     G.missionVotes[ctx.playerID] = vote;
+    ctx.events.endStage();
 }
 
 export function endMissionReview(G, ctx) {
