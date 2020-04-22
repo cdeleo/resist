@@ -11,13 +11,14 @@
     flex-direction: column;
     justify-content: space-between;
   }
+
   re-game.spy {
     background-color: black;
     color: white;
   }
-  re-play-area {
 
-  }
+  re-play-area {}
+
   re-player-list {
     display: flex;
     justify-content: space-evenly;
@@ -36,12 +37,15 @@
     height: 50px;
     background-size: contain;
   }
+
   .status {
     font-size: 2em;
   }
+
   .status.thinking::before {
     content: '🤔';
   }
+
   .status.leader::before {
     content: '🎖️';
   }
@@ -59,6 +63,7 @@
     justify-content: space-between;
     margin-inline-end: 1em;
   }
+
   re-player .card.spy {
     filter: invert(1);
   }
@@ -73,11 +78,11 @@
   <re-team></re-team>
   <re-team-votes></re-team-votes>
   <re-play-area ng-switch on="$ctrl.currentStage">
-    <re-team-pick ng-switch-when="proposeTeam"></re-team-pick>
-    <re-vote-team ng-switch-when="voteOnTeam"></re-vote-team>
-    <re-review-team ng-switch-when="reviewTeam"></re-review-team>
+    <re-team-pick ng-switch-when="teamProposal"></re-team-pick>
+    <re-vote-team ng-switch-when="teamVote"></re-vote-team>
+    <re-review-team ng-switch-when="teamReview"></re-review-team>
     <re-vote-mission ng-switch-when="mission"></re-vote-mission>
-    <re-review-mission ng-switch-when="reviewMission"></re-review-mission>
+    <re-review-mission ng-switch-when="missionReview"></re-review-mission>
   </re-play-area>
   <re-player-list>
     <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>

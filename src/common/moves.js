@@ -1,4 +1,5 @@
 import * as Consts from './consts.js';
+//import { INVALID_MOVE } from 'boardgame.io/core';
 
 function currentMission(G) {
     return G.missionProgression[G.missionResults.length];
@@ -13,10 +14,10 @@ export function proposeTeam(G, ctx, team) {
     }
     G.team = team;
     G.teamVotes = {};
-    ctx.events.setActivePlayers({ all: 'voteOnTeam', next: { currentPlayer: 'reviewTeam' } });
+    ctx.events.setActivePlayers({ all: 'teamVote', next: { currentPlayer: 'teamReview' } });
 }
 
-export function teamVote(G, ctx, vote) {
+export function voteOnTeam(G, ctx, vote) {
     if (vote != Consts.YES && vote != Consts.NO) {
         return INVALID_MOVE;
     }
@@ -33,14 +34,14 @@ export function endTeamReview(G, ctx) {
         for (let playerID of G.team) {
             activePlayers[playerID] = 'mission';
         }
-        ctx.events.setActivePlayers({ value: activePlayers, next: { currentPlayer: 'reviewMission' } });
+        ctx.events.setActivePlayers({ value: activePlayers, next: { currentPlayer: 'missionReview' } });
     } else {
         G.voteNumber++;
         ctx.events.endTurn();
     }
 };
 
-export function missionVote(G, ctx, vote) {
+export function voteOnMission(G, ctx, vote) {
     if (vote != Consts.PASS && vote != Consts.FAIL) {
         return INVALID_MOVE;
     }

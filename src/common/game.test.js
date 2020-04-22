@@ -61,10 +61,10 @@ beforeEach(() => {
 
 describe('initial state', () => {
 
-    it('starts in proposeTeam', () => {
+    it('starts in teamProposal', () => {
         const client = Client({ game: resistGame(), numPlayers: 5 });
         const { G, ctx } = client.store.getState();
-        expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'teamProposal' });
     });
 
     it('starts with minimal state', () => {
@@ -93,7 +93,7 @@ describe('initial state', () => {
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
                 missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
             },
-            { '0': 'reviewMission' }
+            { '0': 'missionReview' }
         );
         client.events.endTurn();
         const { G, ctx } = client.store.getState();
@@ -111,7 +111,7 @@ describe('game ends', () => {
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
                 missionVotes: { '0': Consts.PASS, '1': Consts.PASS },
             },
-            { '0': 'reviewMission' }
+            { '0': 'missionReview' }
         );
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
@@ -126,7 +126,7 @@ describe('game ends', () => {
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
                 missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
             },
-            { '0': 'reviewMission' }
+            { '0': 'missionReview' }
         );
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
@@ -140,7 +140,7 @@ describe('game ends', () => {
                 team: ['0', '1'],
                 teamVotes: { '0': Consts.YES, '1': Consts.NO, '2': Consts.NO },
             },
-            { '0': 'reviewTeam' }
+            { '0': 'teamReview' }
         );
         client.moves.endTeamReview();
         const { G, ctx } = client.store.getState();
@@ -152,23 +152,23 @@ describe('proposeTeam move', () => {
     let client;
 
     beforeEach(() => {
-        client = configureClient({}, { '0': 'proposeTeam' });
+        client = configureClient({}, { '0': 'teamProposal' });
     });
 
-    it('advances to voteOnTeam stage', () => {
+    it('advances to teamVote stage', () => {
         client.moves.proposeTeam(['0', '1']);
         const { G, ctx } = client.store.getState();
         expect(G.team).toEqual(['0', '1']);
         expect(G.teamVotes).toBeDefined();
         expect(G.teamVotes).toEqual({});
-        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'teamVote', '1': 'teamVote', '2': 'teamVote' });
     });
 
     it('requires correct team size', () => {
         const errors = ignoreErrorPrefixes(["invalid move: proposeTeam"]);
         client.moves.proposeTeam(['0']);
         const { G, ctx } = client.store.getState();
-        expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'teamProposal' });
         expect(errors.ignored).toBeTruthy();
     });
 
@@ -176,12 +176,12 @@ describe('proposeTeam move', () => {
         const errors = ignoreErrorPrefixes(["invalid move: proposeTeam"]);
         client.moves.proposeTeam(['0', 'somethingElse']);
         const { G, ctx } = client.store.getState();
-        expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'teamProposal' });
         expect(errors.ignored).toBeTruthy();
     });
 });
 
-describe('teamVote move', () => {
+describe('voteOnTeam move', () => {
     let client;
 
     beforeEach(() => {
@@ -190,38 +190,38 @@ describe('teamVote move', () => {
                 team: ['0', '1'],
                 teamVotes: {},
             },
-            { '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' }
+            { '0': 'teamVote', '1': 'teamVote', '2': 'teamVote' }
         );
     });
 
 
     it('submits vote and ends stage for player', () => {
-        client.moves.teamVote(Consts.YES);
+        client.moves.voteOnTeam(Consts.YES);
         const { G, ctx } = client.store.getState();
         expect(G.teamVotes).toEqual({ '0': Consts.YES });
-        expect(ctx.activePlayers).toEqual({ '1': 'voteOnTeam', '2': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '1': 'teamVote', '2': 'teamVote' });
     });
 
-    it('advances to reviewTeam stage when all votes are submitted', () => {
+    it('advances to teamReview stage when all votes are submitted', () => {
         client = configureClient(
             {
                 team: ['0', '1'],
                 teamVotes: { '1': Consts.NO, '2': Consts.NO },
             },
-            { '0': 'voteOnTeam' }
+            { '0': 'teamVote' }
         );
-        client.moves.teamVote(Consts.YES);
+        client.moves.voteOnTeam(Consts.YES);
         const { G, ctx } = client.store.getState();
         expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO, '2': Consts.NO });
-        //expect(ctx.activePlayers).toEqual({ '0': 'reviewTeam' });
+        //expect(ctx.activePlayers).toEqual({ '0': 'teamReview' });
     });
 
     it('requires valid vote', () => {
-        const errors = ignoreErrorPrefixes(["invalid move: teamVote"]);
-        client.moves.teamVote("somethingElse");
+        const errors = ignoreErrorPrefixes(["invalid move: voteOnTeam"]);
+        client.moves.voteOnTeam("somethingElse");
         const { G, ctx } = client.store.getState();
         expect(G.teamVotes).toEqual({});
-        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'teamVote', '1': 'teamVote', '2': 'teamVote' });
         expect(errors.ignored).toBeTruthy();
     });
 });
@@ -234,12 +234,12 @@ describe('endTeamReview move', () => {
                 team: ['0', '1'],
                 teamVotes: { '0': Consts.YES, '1': Consts.NO, '2': Consts.NO },
             },
-            { '0': 'reviewTeam' }
+            { '0': 'teamReview' }
         );
         client.moves.endTeamReview();
         const { G, ctx } = client.store.getState();
         expect(G.voteNumber).toEqual(BASE_STATE.voteNumber + 1);
-        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '1': 'teamProposal' });
     });
 
     it('advances to mission when vote passed', () => {
@@ -248,7 +248,7 @@ describe('endTeamReview move', () => {
                 team: ['0', '1'],
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
             },
-            { '0': 'reviewTeam' }
+            { '0': 'teamReview' }
         );
         client.moves.endTeamReview();
         const { G, ctx } = client.store.getState();
@@ -273,13 +273,13 @@ describe('missionVote move', () => {
 
 
     it('submits vote and ends stage for player', () => {
-        client.moves.missionVote(Consts.PASS);
+        client.moves.voteOnMission(Consts.PASS);
         const { G, ctx } = client.store.getState();
         expect(G.missionVotes).toEqual({ '0': Consts.PASS });
         expect(ctx.activePlayers).toEqual({ '1': 'mission' });
     });
 
-    it('advances to reviewMission stage when all votes are submitted', () => {
+    it('advances to missionReview stage when all votes are submitted', () => {
         client = configureClient(
             {
                 team: ['0', '1'],
@@ -288,15 +288,15 @@ describe('missionVote move', () => {
             },
             { '0': 'mission' }
         );
-        client.moves.missionVote(Consts.PASS);
+        client.moves.voteOnMission(Consts.PASS);
         const { G, ctx } = client.store.getState();
         expect(G.missionVotes).toEqual({ '0': Consts.PASS, '1': Consts.FAIL });
-        //expect(ctx.activePlayers).toEqual({ '0': 'reviewMission' });
+        //expect(ctx.activePlayers).toEqual({ '0': 'missionReview' });
     });
 
     it('requires valid vote', () => {
-        const errors = ignoreErrorPrefixes(["invalid move: missionVote"]);
-        client.moves.missionVote("somethingElse");
+        const errors = ignoreErrorPrefixes(["invalid move: voteOnMission"]);
+        client.moves.voteOnMission("somethingElse");
         const { G, ctx } = client.store.getState();
         expect(G.missionVotes).toEqual({});
         expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
@@ -304,8 +304,8 @@ describe('missionVote move', () => {
     });
 
     it('requires resistance members to pass', () => {
-        const errors = ignoreErrorPrefixes(["invalid move: missionVote"]);
-        client.moves.missionVote(Consts.FAIL);
+        const errors = ignoreErrorPrefixes(["invalid move: voteOnMission"]);
+        client.moves.voteOnMission(Consts.FAIL);
         const { G, ctx } = client.store.getState();
         expect(G.missionVotes).toEqual({});
         expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
@@ -322,13 +322,13 @@ describe('endMissionReview move', () => {
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
                 missionVotes: { '0': Consts.PASS, '1': Consts.PASS },
             },
-            { '0': 'reviewMission' }
+            { '0': 'missionReview' }
         );
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
         expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.PASS])
         expect(G.voteNumber).toEqual(0);
-        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '1': 'teamProposal' });
     });
 
     it('ends turn and updates results on fail', () => {
@@ -338,12 +338,12 @@ describe('endMissionReview move', () => {
                 teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
                 missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
             },
-            { '0': 'reviewMission' }
+            { '0': 'missionReview' }
         );
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
         expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.FAIL])
         expect(G.voteNumber).toEqual(0);
-        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+        expect(ctx.activePlayers).toEqual({ '1': 'teamProposal' });
     });
 });

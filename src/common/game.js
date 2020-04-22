@@ -130,22 +130,22 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
         turn: {
             onEnd: resetState,
             activePlayers: {
-                currentPlayer: 'proposeTeam',
+                currentPlayer: 'teamProposal',
             },
             stages: {
-                proposeTeam: {
+                teamProposal: {
                     moves: { proposeTeam: Moves.proposeTeam },
                 },
-                voteOnTeam: {
-                    moves: { teamVote: Moves.teamVote },
+                teamVote: {
+                    moves: { voteOnTeam: Moves.voteOnTeam },
                 },
-                reviewTeam: {
+                teamReview: {
                     moves: { endTeamReview: Moves.endTeamReview },
                 },
                 mission: {
-                    moves: { missionVote: Moves.missionVote },
+                    moves: { voteOnMission: Moves.voteOnMission },
                 },
-                reviewMission: {
+                missionReview: {
                     moves: { endMissionReview: Moves.endMissionReview },
                 },
             }
