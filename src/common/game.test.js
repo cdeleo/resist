@@ -165,7 +165,7 @@ describe('teamVote move', () => {
 
 describe('endTeamReview move', () => {
 
-    it('ends turn when vote failed', () => {
+    it('ends turn and advance vote track when vote failed', () => {
         const client = configureClient(
             {
                 team: ['0', '1'],
@@ -175,6 +175,7 @@ describe('endTeamReview move', () => {
         );
         client.moves.endTeamReview();
         const { G, ctx } = client.store.getState();
+        expect(G.voteNumber).toEqual(BASE_STATE.voteNumber + 1);
         expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
     });
 
@@ -263,6 +264,7 @@ describe('endMissionReview move', () => {
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
         expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.PASS])
+        expect(G.voteNumber).toEqual(0);
         expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
     });
 
@@ -278,6 +280,7 @@ describe('endMissionReview move', () => {
         client.moves.endMissionReview();
         const { G, ctx } = client.store.getState();
         expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.FAIL])
+        expect(G.voteNumber).toEqual(0);
         expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
     });
 });
