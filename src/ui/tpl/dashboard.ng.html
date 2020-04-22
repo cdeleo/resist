@@ -71,10 +71,13 @@
 <re-game ng-if="$ctrl.ready != null" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
   <re-team></re-team>
+  <re-team-votes></re-team-votes>
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="proposeTeam"></re-team-pick>
     <re-vote-team ng-switch-when="voteOnTeam"></re-vote-team>
-    <re-vote-mission ng-switch-when="missionVote"></re-vote-mission>
+    <re-review-team ng-switch-when="reviewTeam"></re-review-team>
+    <re-vote-mission ng-switch-when="mission"></re-vote-mission>
+    <re-review-mission ng-switch-when="reviewMission"></re-review-mission>
   </re-play-area>
   <re-player-list>
     <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>

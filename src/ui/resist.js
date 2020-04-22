@@ -138,6 +138,38 @@ class TeamComponent {
   }
 }
 
+class TeamVotesComponent {
+  constructor(gameState, numPlayers) {
+    this._gameState = gameState
+    this._numPlayers = numPlayers
+  }
+  get votes() {
+    const votes = this._gameState.G.teamVotes
+    if (!votes || Object.keys(votes).length != this._numPlayers) {
+      return []
+    }
+    return votes
+  }
+}
+
+class ReviewTeamComponent {
+  constructor(gameService) {
+    this._gameService = gameService
+  }
+  accept() {
+    this._gameService.moves.endTeamReview()
+  }
+}
+
+class ReviewMissionComponent {
+  constructor(gameService) {
+    this._gameService = gameService
+  }
+  accept() {
+    this._gameService.moves.endMissionReview()
+  }
+}
+
 angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
@@ -162,6 +194,18 @@ angular.module('resist', [
   .component('reTeamPick', {
     'controller': TeamPickComponent,
     'templateUrl': 'tpl/team-pick.ng.html',
+  })
+  .component('reTeamVotes', {
+    'controller': TeamVotesComponent,
+    'templateUrl': 'tpl/team-votes.ng.html',
+  })
+  .component('reReviewTeam', {
+    'controller': ReviewTeamComponent,
+    'templateUrl': 'tpl/review-team.ng.html',
+  })
+  .component('reReviewMission', {
+    'controller': ReviewMissionComponent,
+    'templateUrl': 'tpl/review-mission.ng.html',
   })
   .component('reVoteTeam', {
     'controller': VoteTeamComponent,
