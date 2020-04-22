@@ -39,6 +39,14 @@ class PlayerComponent {
   get faction() {
     return this._resist.getPlayerFaction(this.playerId)
   }
+  get isOnCurrentTeam() {
+    return this._resist.isPlayerOnTeam(this.playerId)
+  }
+  get teamVote() {
+    const vote = this._resist.getPlayerTeamVote(this.playerId)
+    if (!vote) return ''
+    return vote == Consts.YES ? 'yay' : 'nay'
+  }
 }
 
 class TeamPickComponent {
@@ -91,10 +99,11 @@ class VoteMissionComponent {
 }
 
 class Resist {
-  constructor(gameState, gameContext, gameService) {
+  constructor(gameState, gameContext, gameService, numPlayers) {
     this._gameState = gameState
     this._gameContext = gameContext
     this._gameService = gameService
+    this._numPlayers = numPlayers
   }
   get myFaction() {
     return this.getPlayerFaction(this._gameService.playerID)
@@ -104,6 +113,17 @@ class Resist {
   }
   get players() {
     return this._gameContext.playOrder
+  }
+  isPlayerOnTeam(playerID) {
+    if (!this._gameState.G.team) return false
+    return this._gameState.G.team.find(t => t == playerID)
+  }
+  getPlayerTeamVote(playerID) {
+    const votes = this._gameState.G.teamVotes
+    if (!votes || Object.keys(votes).length != this._numPlayers) {
+      return null
+    }
+    return votes[playerID]
   }
   getPlayerFaction(playerID) {
     return this._gameState.G.roles[playerID].faction

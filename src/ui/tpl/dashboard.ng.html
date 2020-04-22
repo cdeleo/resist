@@ -49,6 +49,26 @@
   .status.leader::before {
     content: '🎖️';
   }
+
+  .status.member::before {
+    content: '👥';
+  }
+
+  .status.vote {
+    display: none;
+  }
+
+  .status.vote.nay, .status.vote.yay {
+    display: inherit;
+  }
+
+  .status.vote.yay::before {
+    content: '👍';
+  }
+
+  .status.vote.nay::before {
+    content: '👎';
+  }
 </style>
 <style>
   re-player .card {
@@ -78,8 +98,6 @@
 </div>
 <re-game ng-if="$ctrl.ready && !$ctrl.gameover" ng-class="$ctrl.faction">
   <re-dots-and-number></re-dots-and-number>
-  <re-team></re-team>
-  <re-team-votes></re-team-votes>
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="teamProposal"></re-team-pick>
     <re-vote-team ng-switch-when="teamVote"></re-vote-team>
