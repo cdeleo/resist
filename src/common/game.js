@@ -117,13 +117,13 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
                     moves: { teamVote: Moves.teamVote },
                 },
                 reviewTeam: {
-                    moves: { endReview: Moves.endReview },
+                    moves: { endTeamReview: Moves.endTeamReview },
                 },
                 mission: {
                     moves: { missionVote: Moves.missionVote },
                 },
                 reviewMission: {
-                    moves: { endReview: Moves.endReview },
+                    moves: { endMissionReview: Moves.endMissionReview },
                 },
             }
         }

@@ -46,7 +46,7 @@ function ignoreErrorPrefixes(prefixes) {
         if (args.some(arg => prefixes.some(prefix => arg.startsWith(prefix)))) {
             result.ignored = true;
         } else {
-            console.log(args); console._error(...args);
+            console._error(...args);
         }
     });
     return result;
@@ -95,6 +95,8 @@ describe('proposeTeam move', () => {
         client.moves.proposeTeam(['0', '1']);
         const { G, ctx } = client.store.getState();
         expect(G.team).toEqual(['0', '1']);
+        expect(G.teamVotes).toBeDefined();
+        expect(G.teamVotes).toEqual({});
         expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam' });
     });
 
@@ -111,6 +113,51 @@ describe('proposeTeam move', () => {
         client.moves.proposeTeam(['0', 'somethingElse']);
         const { G, ctx } = client.store.getState();
         expect(ctx.activePlayers).toEqual({ '0': 'proposeTeam' });
+        expect(errors.ignored).toBeTruthy();
+    });
+});
+
+describe('teamVote move', () => {
+    let client;
+
+    beforeEach(() => {
+        client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: {},
+            },
+            { '0': 'voteOnTeam', '1': 'voteOnTeam' }
+        );
+    });
+
+
+    it('submits vote and ends stage for player', () => {
+        client.moves.teamVote(Consts.YES);
+        const { G, ctx } = client.store.getState();
+        expect(G.teamVotes).toEqual({ '0': Consts.YES });
+        expect(ctx.activePlayers).toEqual({ '1': 'voteOnTeam' });
+    });
+
+    it('advances to reviewTeam stage when all votes are submitted', () => {
+        client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '1': Consts.NO },
+            },
+            { '0': 'voteOnTeam' }
+        );
+        client.moves.teamVote(Consts.YES);
+        const { G, ctx } = client.store.getState();
+        //expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO });
+        //expect(ctx.activePlayers).toEqual({ '0': 'reviewTeam' });
+    });
+
+    it('requires valid vote', () => {
+        const errors = ignoreErrorPrefixes(["invalid move: teamVote"]);
+        client.moves.teamVote("somethingElse");
+        const { G, ctx } = client.store.getState();
+        expect(G.teamVotes).toEqual({});
+        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam' });
         expect(errors.ignored).toBeTruthy();
     });
 });
