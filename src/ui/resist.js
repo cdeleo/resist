@@ -121,7 +121,7 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '✅' : '💣')
+    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '🎂' : '💣')
     const notYetRun = Array(5 - results.length).fill('-')
     return [...results, ...notYetRun]
   }
