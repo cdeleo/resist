@@ -52,5 +52,7 @@ export function missionVote(G, ctx, vote) {
 }
 
 export function endMissionReview(G, ctx) {
-    ctx.endStage();
+    const nFail = Object.values(G.missionVotes).filter(vote => vote == Consts.FAIL).length;
+    G.missionResults.push(nFail > currentMission(G).allowedFails ? Consts.FAIL : Consts.PASS);
+    ctx.events.endTurn();
 };

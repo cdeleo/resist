@@ -248,3 +248,36 @@ describe('missionVote move', () => {
         expect(errors.ignored).toBeTruthy();
     });
 });
+
+describe('endMissionReview move', () => {
+
+    it('ends turn and updates results on pass', () => {
+        const client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '0': Consts.PASS, '1': Consts.PASS },
+            },
+            { '0': 'reviewMission' }
+        );
+        client.moves.endMissionReview();
+        const { G, ctx } = client.store.getState();
+        expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.PASS])
+        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+    });
+
+    it('ends turn and updates results on fail', () => {
+        const client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
+            },
+            { '0': 'reviewMission' }
+        );
+        client.moves.endMissionReview();
+        const { G, ctx } = client.store.getState();
+        expect(G.missionResults).toEqual([...BASE_STATE.missionResults, Consts.FAIL])
+        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+    });
+});
