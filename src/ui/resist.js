@@ -48,9 +48,12 @@ class TeamPickComponent {
   pick(playerID) {
     if (this.team.has(playerID)) {
       this.team.delete(playerID)
-    } else if (this.team.size < this.teamSize) {
+    } else if (!this.isFullTeam) {
       this.team.add(playerID)
     }
+  }
+  get isFullTeam() {
+    return this.team.size >= this.teamSize
   }
   submit() {
     this._resist.proposeTeam(Array.from(this.team))
