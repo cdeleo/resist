@@ -14,7 +14,7 @@ export function proposeTeam(G, ctx, team) {
     }
     G.team = team;
     G.teamVotes = {};
-    ctx.events.setActivePlayers({ all: 'voteOnTeam' });
+    ctx.events.setActivePlayers({ all: 'voteOnTeam', next: { currentPlayer: 'teamReview' } });
 }
 
 export function teamVote(G, ctx, vote) {
@@ -34,7 +34,7 @@ export function endTeamReview(G, ctx) {
         for (let playerID of G.team) {
             activePlayers[playerID] = 'mission';
         }
-        ctx.events.setActivePlayers({ value: activePlayers });
+        ctx.events.setActivePlayers({ value: activePlayers, next: { currentPlayer: 'missionReview' } });
     } else {
         ctx.events.endTurn();
     }
