@@ -1,5 +1,5 @@
 import * as Consts from './consts.js';
-import { resistGame } from './game.js';
+import { resistGame, sanitizeState } from './game.js';
 import { Client } from 'boardgame.io/client';
 import { Local } from 'boardgame.io/multiplayer';
 
@@ -33,6 +33,7 @@ function configureClient(extraState, initialPhases) {
         game: {
             ...resistGame({ 3: TEST_GAME_STRUCTURE }),
             setup: () => ({ ...BASE_STATE, ...extraState }),
+            playerView: G => G,
         },
         multiplayer: Local(),
         playerID: '0',
@@ -347,3 +348,76 @@ describe('endMissionReview move', () => {
         expect(ctx.activePlayers).toEqual({ '1': 'teamProposal' });
     });
 });
+
+describe('sanitizeState', () => {
+
+    const G = {
+        missionProgression: TEST_GAME_STRUCTURE.missionProgression,
+        roles: {
+            '0': { faction: Consts.RESISTANCE },
+            '1': { faction: Consts.SPY },
+            '2': { faction: Consts.RESISTANCE },
+            '3': { faction: Consts.SPY },
+        },
+        missionResults: [Consts.PASS, Consts.FAIL],
+        voteNumber: 3,
+        team: ['0', '1', '2'],
+        teamVotes: {
+            '0': Consts.YES,
+            '1': Consts.YES,
+            '2': Consts.NO,
+            '3': Consts.NO,
+        },
+        missionVotes: {
+            '0': Consts.PASS,
+            '1': Consts.FAIL,
+            '2': Consts.PASS,
+        }
+    };
+
+    it('doesn\'t remove public information', () => {
+        const sanitizedG = sanitizeState(G, {}, '0');
+        expect(sanitizedG.missionProgression).toEqual(G.missionProgression);
+        expect(sanitizedG.missionResults).toEqual(G.missionResults);
+        expect(sanitizedG.voteNumber).toEqual(G.voteNumber);
+        expect(sanitizedG.team).toEqual(G.team);
+    });
+
+    it('removes all other roles for resistance', () => {
+        expect(sanitizeState(G, {}, '0').roles).toEqual({
+            '0': { faction: Consts.RESISTANCE },
+        })
+    });
+
+    it('removes all non-spy roles for spies', () => {
+        expect(sanitizeState(G, {}, '1').roles).toEqual({
+            '1': { faction: Consts.SPY },
+            '3': { faction: Consts.SPY },
+        })
+    });
+
+    it('doesn\'t remove team votes while no players are still voting', () => {
+        expect(sanitizeState(G, {}, '0').teamVotes).toEqual(G.teamVotes);
+    });
+
+    it('removes all other team votes while players are still voting', () => {
+        const ctx = { activePlayers: { 2: 'teamVote' } };
+        expect(sanitizeState(G, ctx, '0').teamVotes).toEqual({ '0': Consts.YES });
+    });
+
+    it('aggregates mission votes while no players are still voting', () => {
+        const sanitizedG = sanitizeState(G, {}, '0');
+        expect(sanitizedG.missionVotes).toEqual({ '0': Consts.PASS });
+        expect(sanitizedG.missionVotesShuffled).toEqual({
+            [Consts.PASS]: 2,
+            [Consts.FAIL]: 1,
+        });
+    });
+
+    it('doesn\'t aggregate mission votes while players are still voting', () => {
+        const ctx = { activePlayers: { 2: 'mission' } };
+        const sanitizedG = sanitizeState(G, ctx, '0');
+        expect(sanitizedG.missionVotes).toEqual({ '0': Consts.PASS });
+        expect(sanitizedG.missionVotesShuffled).toBeUndefined();
+    });
+})
