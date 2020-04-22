@@ -5,7 +5,7 @@ import { Local } from 'boardgame.io/multiplayer';
 
 const TEST_GAME_STRUCTURE = {
     factions: {
-        'resistance': 1,
+        'resistance': 2,
         'spy': 1,
     },
     missionProgression: [
@@ -20,6 +20,7 @@ const BASE_STATE = {
     roles: {
         '0': { faction: Consts.RESISTANCE },
         '1': { faction: Consts.SPY },
+        '2': { faction: Consts.RESISTANCE },
     },
     missionResults: [Consts.PASS, Consts.FAIL],
     voteNumber: 3,
@@ -28,12 +29,12 @@ const BASE_STATE = {
 function configureClient(extraState, initialPhases) {
     const client = Client({
         game: {
-            ...resistGame({ 2: TEST_GAME_STRUCTURE }),
+            ...resistGame({ 3: TEST_GAME_STRUCTURE }),
             setup: () => ({ ...BASE_STATE, ...extraState }),
         },
         multiplayer: Local(),
         playerID: '0',
-        numPlayers: 2,
+        numPlayers: 3,
     });
     client.start();
     client.events.setActivePlayers({ value: initialPhases });
@@ -97,7 +98,7 @@ describe('proposeTeam move', () => {
         expect(G.team).toEqual(['0', '1']);
         expect(G.teamVotes).toBeDefined();
         expect(G.teamVotes).toEqual({});
-        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' });
     });
 
     it('requires correct team size', () => {
@@ -126,7 +127,7 @@ describe('teamVote move', () => {
                 team: ['0', '1'],
                 teamVotes: {},
             },
-            { '0': 'voteOnTeam', '1': 'voteOnTeam' }
+            { '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' }
         );
     });
 
@@ -135,20 +136,20 @@ describe('teamVote move', () => {
         client.moves.teamVote(Consts.YES);
         const { G, ctx } = client.store.getState();
         expect(G.teamVotes).toEqual({ '0': Consts.YES });
-        expect(ctx.activePlayers).toEqual({ '1': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '1': 'voteOnTeam', '2': 'voteOnTeam' });
     });
 
     it('advances to reviewTeam stage when all votes are submitted', () => {
         client = configureClient(
             {
                 team: ['0', '1'],
-                teamVotes: { '1': Consts.NO },
+                teamVotes: { '1': Consts.NO, '2': Consts.NO },
             },
             { '0': 'voteOnTeam' }
         );
         client.moves.teamVote(Consts.YES);
         const { G, ctx } = client.store.getState();
-        //expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO });
+        //expect(G.teamVotes).toEqual({ '0': Consts.YES, '1': Consts.NO, '2': Consts.NO });
         //expect(ctx.activePlayers).toEqual({ '0': 'reviewTeam' });
     });
 
@@ -157,7 +158,36 @@ describe('teamVote move', () => {
         client.moves.teamVote("somethingElse");
         const { G, ctx } = client.store.getState();
         expect(G.teamVotes).toEqual({});
-        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam' });
+        expect(ctx.activePlayers).toEqual({ '0': 'voteOnTeam', '1': 'voteOnTeam', '2': 'voteOnTeam' });
         expect(errors.ignored).toBeTruthy();
+    });
+});
+
+describe('endTeamReview move', () => {
+
+    it('ends turn when vote failed', () => {
+        const client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.NO, '2': Consts.NO },
+            },
+            { '0': 'reviewTeam' }
+        );
+        client.moves.endTeamReview();
+        const { G, ctx } = client.store.getState();
+        expect(ctx.activePlayers).toEqual({ '1': 'proposeTeam' });
+    });
+
+    it('advances to mission when vote passed', () => {
+        const client = configureClient(
+            {
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+            },
+            { '0': 'reviewTeam' }
+        );
+        client.moves.endTeamReview();
+        const { G, ctx } = client.store.getState();
+        expect(ctx.activePlayers).toEqual({ '0': 'mission', '1': 'mission' });
     });
 });

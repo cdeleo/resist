@@ -12,7 +12,6 @@ export function proposeTeam(G, ctx, team) {
     if (!team.every(playerID => playerID in ctx.playOrder)) {
         return INVALID_MOVE;
     }
-
     G.team = team;
     G.teamVotes = {};
     ctx.events.setActivePlayers({ all: 'voteOnTeam' });
@@ -27,7 +26,18 @@ export function teamVote(G, ctx, vote) {
 }
 
 export function endTeamReview(G, ctx) {
-    ctx.endStage();
+    const nYes = Object.values(G.teamVotes).filter(vote => vote == Consts.YES).length;
+    if (nYes > (ctx.playOrder.length - nYes)) {
+        // Team vote passes
+        G.missionVotes = {};
+        const activePlayers = {};
+        for (let playerID of G.team) {
+            activePlayers[playerID] = 'mission';
+        }
+        ctx.events.setActivePlayers({ value: activePlayers });
+    } else {
+        ctx.events.endTurn();
+    }
 };
 
 export function missionVote(G, ctx, vote) {
