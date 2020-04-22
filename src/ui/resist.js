@@ -1,5 +1,6 @@
 import { ngBoardgameIO } from './boardgameio/ng.js'
 import { resistGame } from '../common/game.js'
+import * as Consts from '../common/consts.js';
 
 class DashboardComponent {
   constructor(resist, gameContext, gameState) {
@@ -57,10 +58,10 @@ class VoteTeamComponent {
     this._resist = resist
   }
   voteYay() {
-
+    this._resist.vote(Consts.YES)
   }
   voteNay() {
-
+    this._resist.vote(Consts.NO)
   }
 }
 
@@ -81,6 +82,9 @@ class Resist {
   }
   proposeTeam(team) {
     this._gameService.moves.proposeTeam(team)
+  }
+  vote(decision) {
+    this._gameService.moves.teamVote(decision)
   }
 }
 
