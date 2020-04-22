@@ -144,13 +144,14 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '🎂' : '💣')
+    const results = this._gameState.G.missionResults
+      .map(r => r == Consts.PASS ? '🎂' : '💣')
     const notYetRun = Array(5 - results.length).fill('-')
     return [...results, ...notYetRun]
   }
   get teamProposals() {
     const failedVotes = Array(this._gameState.G.voteNumber).fill('⚫')
-    const notYetVoted = Array(4 - failedVotes.length).fill('-')
+    const notYetVoted = Array(Math.max(0, 4 - failedVotes.length)).fill('-')
     return [...failedVotes, '🗳️', ...notYetVoted]
   }
 }
