@@ -73,6 +73,7 @@
   <re-play-area ng-switch on="$ctrl.currentStage">
     <re-team-pick ng-switch-when="proposeTeam"></re-team-pick>
     <re-vote-team ng-switch-when="voteOnTeam"></re-vote-team>
+    <re-vote-mission ng-switch-when="missionVote"></re-vote-mission>
   </re-play-area>
   <re-player-list>
     <re-player ng-repeat="i in $ctrl.playerIds" player-id="i"></re-player>

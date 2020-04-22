@@ -61,14 +61,26 @@ class VoteTeamComponent {
   constructor(resist) {
     this._resist = resist
   }
-  get canVoteNay() {
-    return this._resist.myFaction == Consts.SPY
-  }
   voteYay() {
     this._resist.vote(Consts.YES)
   }
   voteNay() {
     this._resist.vote(Consts.NO)
+  }
+}
+
+class VoteMissionComponent {
+  constructor(resist) {
+    this._resist = resist
+  }
+  get canVoteNay() {
+    return this._resist.myFaction == Consts.SPY
+  }
+  voteYay() {
+    this._resist.perform(Consts.PASS)
+  }
+  voteNay() {
+    this._resist.perform(Consts.FAIL)
   }
 }
 
@@ -96,6 +108,9 @@ class Resist {
   vote(decision) {
     this._gameService.moves.teamVote(decision)
   }
+  perform(performance) {
+    this._gameService.moves.missionVote(performance)
+  }
 }
 
 class DotsAndNumberComponent {
@@ -103,18 +118,14 @@ class DotsAndNumberComponent {
     this._gameState = gameState
   }
   get missionResults() {
-    const results = this._gameState.G.missionResults
-    const totalProgress = Array(5).fill("-", results.length, 5)
-    results.forEach((result, i) => {
-      totalProgress[i] = result == Consts.PASS ? 'Pass' : 'Fail'
-    })
-    return totalProgress
+    const results = this._gameState.G.missionResults.map(r => r == Consts.PASS ? '✅' : '💣')
+    const notYetRun = Array(5 - results.length).fill('-')
+    return [...results, ...notYetRun]
   }
   get teamProposals() {
-    const voteNumber = this._gameState.G.voteNumber
-    const totalProgress = Array(5).fill("-")
-    totalProgress[voteNumber] = voteNumber
-    return totalProgress
+    const failedVotes = Array(this._gameState.G.voteNumber).fill('⚫')
+    const notYetVoted = Array(4 - failedVotes.length).fill('-')
+    return [...failedVotes, '🗳️', ...notYetVoted]
   }
 }
 
@@ -146,6 +157,10 @@ angular.module('resist', [
   .component('reVoteTeam', {
     'controller': VoteTeamComponent,
     'templateUrl': 'tpl/vote-team.ng.html',
+  })
+  .component('reVoteMission', {
+    'controller': VoteMissionComponent,
+    'templateUrl': 'tpl/vote-mission.ng.html',
   })
   .component('reDotsAndNumber', {
     'controller': DotsAndNumberComponent,
