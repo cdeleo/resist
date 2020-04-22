@@ -98,6 +98,19 @@ function resetState(G) {
     };
 }
 
+function determineWinner(G) {
+    const nPass = G.missionResults.filter(result => result == Consts.PASS).length;
+    if (nPass == 3) {
+        return { winner: Consts.RESISTANCE };
+    }
+    if ((G.missionResults.length - nPass) == 3) {
+        return { winner: Consts.SPY };
+    }
+    if (G.voteNumber > 4) {
+        return { winner: Consts.SPY };
+    }
+}
+
 export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
     return {
         setup(ctx) {
@@ -136,6 +149,7 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
                     moves: { endMissionReview: Moves.endMissionReview },
                 },
             }
-        }
+        },
+        endIf: determineWinner,
     };
 };

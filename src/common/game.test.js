@@ -12,6 +12,8 @@ const TEST_GAME_STRUCTURE = {
         { size: 2, allowedFails: 0 },
         { size: 2, allowedFails: 0 },
         { size: 2, allowedFails: 0 },
+        { size: 2, allowedFails: 0 },
+        { size: 2, allowedFails: 0 },
     ],
 }
 
@@ -96,7 +98,54 @@ describe('initial state', () => {
         client.events.endTurn();
         const { G, ctx } = client.store.getState();
         expect(G).toEqual(BASE_STATE);
-    })
+    });
+});
+
+describe('game ends', () => {
+
+    it('when resistance has three points', () => {
+        const client = configureClient(
+            {
+                missionResults: [Consts.PASS, Consts.FAIL, Consts.PASS, Consts.FAIL],
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '0': Consts.PASS, '1': Consts.PASS },
+            },
+            { '0': 'reviewMission' }
+        );
+        client.moves.endMissionReview();
+        const { G, ctx } = client.store.getState();
+        expect(ctx.gameover).toEqual({ winner: Consts.RESISTANCE });
+    });
+
+    it('when spies have three points', () => {
+        const client = configureClient(
+            {
+                missionResults: [Consts.PASS, Consts.FAIL, Consts.PASS, Consts.FAIL],
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.YES, '2': Consts.NO },
+                missionVotes: { '0': Consts.PASS, '1': Consts.FAIL },
+            },
+            { '0': 'reviewMission' }
+        );
+        client.moves.endMissionReview();
+        const { G, ctx } = client.store.getState();
+        expect(ctx.gameover).toEqual({ winner: Consts.SPY });
+    });
+
+    it('when five votes in a row have failed', () => {
+        const client = configureClient(
+            {
+                voteNumber: 4,
+                team: ['0', '1'],
+                teamVotes: { '0': Consts.YES, '1': Consts.NO, '2': Consts.NO },
+            },
+            { '0': 'reviewTeam' }
+        );
+        client.moves.endTeamReview();
+        const { G, ctx } = client.store.getState();
+        expect(ctx.gameover).toEqual({ winner: Consts.SPY });
+    });
 });
 
 describe('proposeTeam move', () => {
