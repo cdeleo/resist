@@ -209,12 +209,16 @@ class ReviewMissionComponent {
   }
 }
 
+const hash = location.hash.substr(1).split(';')
+const playerId = hash.pop()
+const gameId = hash.pop()
+
 angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
 ])
-  .constant('gameID', 'default')
-  .constant('playerID', '1')
+  .constant('gameID', gameId)
+  .constant('playerID', playerId)
   .constant('numPlayers', 5)
   .constant('multiplayer', BoardgameIO.Local())
   .constant('game', resistGame())
