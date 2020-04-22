@@ -6,7 +6,7 @@
       bottom: 0;
       width: 25vw;
       min-width: 250px;
-      background: #eee;
+      background: #eeee;
       box-shadow: 0 0 10px grey;
       padding: 20px;
       overflow: scroll;
@@ -59,29 +59,37 @@
 <div class="bgio-debug">
   <div>
       <h3>Players</h3>
-      <button class="player-selector" ng-repeat="p in $ctrl.client.getState().ctx.playOrder" ng-click="$ctrl.updatePlayerID(p)" ng-disabled="p == $ctrl.client.playerID">{{ p }}</button>
+      <button
+          class="player-selector"
+          ng-repeat="p in $ctrl.gameContext.playOrder"
+          ng-click="$ctrl.updatePlayerID(p)"
+          ng-disabled="p == $ctrl.gameService.playerID">{{ p }}</button>
   </div>
   <div>
       <h3>Game State</h3>
-      <pre><code>{{ $ctrl.client.getState().G | json }}</code></pre>
+      <pre><code>{{ $ctrl.gameState.G | json }}</code></pre>
   </div>
   <div>
       <h3>Moves</h3>
       <div><input ng-model="$ctrl.moveArgs" placeholder="Arguments"></div>
-      <button ng-repeat="name in $ctrl.moveNames | orderBy:'+'" ng-click="$ctrl.makeMove(name)">{{ name }}</button>
+      <button
+          ng-repeat="name in $ctrl.moveNames | orderBy:'+'"
+           ng-click="$ctrl.makeMove(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Events</h3>
       <div><input ng-model="$ctrl.evtArgs" placeholder="Arguments"></div>
-      <button ng-repeat="name in $ctrl.eventNames | orderBy:'+'" ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
+      <button
+          ng-repeat="name in $ctrl.eventNames | orderBy:'+'"
+          ng-click="$ctrl.triggerEvent(name)">{{ name }}</button>
   </div>
   <div>
       <h3>Context <button ng-click="$ctrl.showContext = !$ctrl.showContext">Toggle</button></h3>
-      <pre ng-if="$ctrl.showContext"><code>{{ $ctrl.client.getState().ctx | json }}</code></pre>
+      <pre ng-if="$ctrl.showContext"><code>{{ $ctrl.gameState.ctx | json }}</code></pre>
   </div>
   <div>
       <h3>Log</h3>
-      <div ng-if="$ctrl.client.getState().log.length == 0">No logs</div>
-      <bgio-log-entry ng-repeat="entry in $ctrl.client.getState().log" value="entry"></bgio-log-entry>
+      <div ng-if="$ctrl.gameState.log.length == 0">No logs</div>
+      <bgio-log-entry ng-repeat="entry in $ctrl.gameState.log" value="entry"></bgio-log-entry>
   </div>
 </div>

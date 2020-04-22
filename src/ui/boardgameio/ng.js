@@ -5,7 +5,7 @@ export const ngBoardgameIO = {
 
 class GameService {
   constructor(game, gameID, playerID, numPlayers, multiplayer, debug, $timeout) {
-    this.client = BoardgameIO.Client({
+    this._client = BoardgameIO.Client({
       game,
       gameID,
       playerID,
@@ -14,46 +14,53 @@ class GameService {
       debug,
     })
     if (multiplayer) {
-      this.client.subscribe(function () {
+      this._client.subscribe(function () {
         $timeout(() => { }) // Trigger $rootScope update on the next cycle
       })
-      this.client.start()
+      this._client.start()
     }
   }
-
   get state() {
-    return this.client.getState()
+    return this._client.getState()
   }
-  isActive(playerId) {
-    return playerId in (this.state.ctx.activePlayers || {})
+  get moves() {
+    return this._client.moves
   }
-  isCurrentPlayer(playerId) {
-    return playerId == this.state.ctx.currentPlayer
+  get events() {
+    return this._client.events
+  }
+  get playerID() {
+    return this._client.playerID
+  }
+  updatePlayerID(newPlayerID) {
+    this._client.updatePlayerID(newPlayerID)
   }
 }
 
 class DebugComponentController {
-  constructor(gameService) {
-    this.client = gameService.client
+  constructor(gameService, gameState, gameContext) {
+    this.gameService = gameService
+    this.gameState = gameState
+    this.gameContext = gameContext
     this.moveArgs = ''
     this.evtArgs = ''
   }
 
   updatePlayerID(playerID) {
-    this.client.updatePlayerID(playerID)
+    this.gameService.updatePlayerID(playerID)
   }
 
   get moveNames() {
-    return Object.keys(this.client.moves)
+    return Object.keys(this.gameService.moves)
   }
 
   get eventNames() {
-    return Object.keys(this.client.events)
+    return Object.keys(this.gameService.events)
   }
 
   makeMove(moveName) {
     try {
-      this._execute(this.client.moves[moveName], this.moveArgs)
+      this._execute(this.gameService.moves[moveName], this.moveArgs)
     } catch (e) {
       this._createLogEntry('ERROR', `BadMove: ${moveName}`, this.moveArgs)
     }
@@ -61,7 +68,7 @@ class DebugComponentController {
 
   triggerEvent(eventName) {
     try {
-      this._execute(this.client.events[eventName], this.evtArgs)
+      this._execute(this.gameService.moves[eventName], this.evtArgs)
     } catch (e) {
       this._createLogEntry('ERROR', `BadEvent: ${eventName}`, this.eventArgs)
     }
@@ -101,6 +108,49 @@ class LogEntryComponentController {
   }
 }
 
+class GameState {
+  constructor(gameService) {
+    this._gameService = gameService
+  }
+  get _state() {
+    return this._gameService.state
+  }
+  get ctx() {
+    return this._state ? this._state.ctx : {}
+  }
+  get G() {
+    return this._state ? this._state.G : {}
+  }
+  get log() {
+    return this._state ? this._state.log : []
+  }
+  get ready() {
+    return Boolean(this._state)
+  }
+}
+
+class GameContext {
+  constructor(gameService, gameState) {
+    this._gameService = gameService
+    this._gameState = gameState
+  }
+  get ctx() {
+    return this._gameState.ctx
+  }
+  get playOrder() {
+    return this.ctx.playOrder
+  }
+  get currentStage() {
+    return this.ctx.activePlayers[this._gameService.playerID]
+  }
+  isActive(playerId) {
+    return playerId in (this.ctx.activePlayers || {})
+  }
+  isCurrentPlayer(playerId) {
+    return playerId == this.ctx.currentPlayer
+  }
+}
+
 angular.module(ngBoardgameIO.moduleName, [])
   .constant('gameID', undefined)
   .constant('playerID', undefined)
@@ -108,6 +158,8 @@ angular.module(ngBoardgameIO.moduleName, [])
   .constant('multiplayer', false)
   .constant('debug', false)
   .service('gameService', GameService)
+  .service('gameState', GameState)
+  .service('gameContext', GameContext)
 
 angular.module(ngBoardgameIO.debugModuleName, [ngBoardgameIO.moduleName])
   .component('bgioDebug', {

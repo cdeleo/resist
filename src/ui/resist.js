@@ -2,23 +2,85 @@ import { ngBoardgameIO } from './boardgameio/ng.js'
 import { resistGame } from '../common/game.js'
 
 class DashboardComponent {
-  constructor(gameService) {
-    this.g = gameService
+  constructor(resist, gameContext, gameState) {
+    this._resist = resist
+    this._gameContext = gameContext
+    this._gameState = gameState
+  }
+  get ready() {
+    return this._gameState.ready
   }
   get playerIds() {
-    return this.g.state.ctx.playOrder
+    return this._gameContext.playOrder
+  }
+  get currentStage() {
+    return this._gameContext.currentStage
+  }
+  get faction() {
+    return this._resist.myFaction
   }
 }
 
 class PlayerComponent {
-  constructor(gameService) {
-    this.g = gameService
+  constructor(gameContext) {
+    this._gameContext = gameContext
   }
   get isThinking() {
-    return this.g.isActive(this.playerId)
+    return this._gameContext.isActive(this.playerId)
   }
   get isLeader() {
-    return this.g.isCurrentPlayer(this.playerId)
+    return this._gameContext.isCurrentPlayer(this.playerId)
+  }
+}
+
+class TeamPickComponent {
+  constructor(resist) {
+    this._resist = resist
+    this.teamSize = resist.currentMissionTeamSize
+    this.players = resist.players
+    this.team = new Set()
+  }
+  pick(playerID) {
+    if (this.team.has(playerID)) {
+      this.team.delete(playerID)
+    } else if (this.team.size < this.teamSize) {
+      this.team.add(playerID)
+    }
+  }
+  submit() {
+    this._resist.proposeTeam(Array.from(this.team))
+  }
+}
+
+class VoteTeamComponent {
+  constructor(resist) {
+    this._resist = resist
+  }
+  voteYay() {
+
+  }
+  voteNay() {
+
+  }
+}
+
+class Resist {
+  constructor(gameState, gameContext, gameService) {
+    this._gameState = gameState
+    this._gameContext = gameContext
+    this._gameService = gameService
+  }
+  get myFaction() {
+    return this._gameState.G.roles[this._gameService.playerID].faction
+  }
+  get currentMissionTeamSize() {
+    return this._gameState.G.missionProgression[this._gameState.G.missionResults.length].size
+  }
+  get players() {
+    return this._gameContext.playOrder
+  }
+  proposeTeam(team) {
+    this._gameService.moves.proposeTeam(team)
   }
 }
 
@@ -31,6 +93,7 @@ angular.module('resist', [
   .constant('numPlayers', 5)
   .constant('multiplayer', BoardgameIO.Local())
   .constant('game', resistGame())
+  .service('resist', Resist)
   .component('reDash', {
     'controller': DashboardComponent,
     'templateUrl': 'tpl/dashboard.ng.html',
@@ -41,5 +104,13 @@ angular.module('resist', [
     'bindings': {
       'playerId': '<',
     },
+  })
+  .component('reTeamPick', {
+    'controller': TeamPickComponent,
+    'templateUrl': 'tpl/team-pick.ng.html',
+  })
+  .component('reVoteTeam', {
+    'controller': VoteTeamComponent,
+    'templateUrl': 'tpl/vote-team.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])

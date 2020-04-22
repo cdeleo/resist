@@ -1,4 +1,3 @@
 <span>Player {{ $ctrl.playerId }}</span>
-<ul>
-  <li>is <span ng-if="!$ctrl.isThinking">not</span> thinking
-  <li>is <span ng-if="!$ctrl.isLeader">not</span> the leader
+<span class="status thinking" ng-if="$ctrl.isThinking"></span>
+<span class="status leader" ng-if="$ctrl.isLeader">️</span>
