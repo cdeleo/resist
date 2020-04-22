@@ -61,6 +61,18 @@ class VoteTeamComponent {
   constructor(resist) {
     this._resist = resist
   }
+  voteYay() {
+    this._resist.vote(Consts.YES)
+  }
+  voteNay() {
+    this._resist.vote(Consts.NO)
+  }
+}
+
+class MissionVoteComponent {
+  constructor(resist) {
+    this._resist = resist
+  }
   get canVoteNay() {
     return this._resist.myFaction == Consts.SPY
   }
