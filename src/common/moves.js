@@ -1,5 +1,4 @@
 import * as Consts from './consts.js';
-import { INVALID_MOVE } from 'boardgame.io/core';
 
 function currentMission(G) {
     return G.missionProgression[G.missionResults.length];
