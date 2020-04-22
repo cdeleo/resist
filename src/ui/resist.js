@@ -98,6 +98,26 @@ class Resist {
   }
 }
 
+class DotsAndNumberComponent {
+  constructor(gameState) {
+    this._gameState = gameState
+  }
+  get missionResults() {
+    const results = this._gameState.G.missionResults
+    const totalProgress = Array(5).fill("-", results.length, 5)
+    results.forEach((result, i) => {
+      totalProgress[i] = result == Consts.PASS ? 'Pass' : 'Fail'
+    })
+    return totalProgress
+  }
+  get teamProposals() {
+    const voteNumber = this._gameState.G.voteNumber
+    const totalProgress = Array(5).fill("-")
+    totalProgress[voteNumber] = voteNumber
+    return totalProgress
+  }
+}
+
 angular.module('resist', [
   ngBoardgameIO.moduleName,
   ngBoardgameIO.debugModuleName,
@@ -126,5 +146,9 @@ angular.module('resist', [
   .component('reVoteTeam', {
     'controller': VoteTeamComponent,
     'templateUrl': 'tpl/vote-team.ng.html',
+  })
+  .component('reDotsAndNumber', {
+    'controller': DotsAndNumberComponent,
+    'templateUrl': 'tpl/dots-and-number.ng.html',
   })
 angular.bootstrap(document.body, ['resist'])
