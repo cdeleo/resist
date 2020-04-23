@@ -225,6 +225,7 @@ class MissionResultsComponent {
 const hash = location.hash.substr(1).split(';')
 const playerId = hash.pop()
 const gameId = hash.pop()
+const numPlayers = parseInt(hash.pop(), 10)
 
 angular.module('resist', [
   ngBoardgameIO.moduleName,
@@ -232,7 +233,7 @@ angular.module('resist', [
 ])
   .constant('gameID', gameId)
   .constant('playerID', playerId)
-  .constant('numPlayers', 5)
+  .constant('numPlayers', numPlayers)
   .constant('multiplayer', BoardgameIO.Local())
   .constant('game', resistGame())
   .service('resist', Resist)
