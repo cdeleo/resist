@@ -198,13 +198,13 @@ export function resistGame(gameStructureMap = GAME_STRUCTURE_MAP) {
                     moves: { proposeTeam: Moves.proposeTeam },
                 },
                 teamVote: {
-                    moves: { voteOnTeam: Moves.voteOnTeam },
+                    moves: { voteOnTeam: { move: Moves.voteOnTeam, client: false } },
                 },
                 teamReview: {
                     moves: { endTeamReview: Moves.endTeamReview },
                 },
                 mission: {
-                    moves: { voteOnMission: Moves.voteOnMission },
+                    moves: { voteOnMission: { move: Moves.voteOnMission, client: false } },
                 },
                 missionReview: {
                     moves: { endMissionReview: Moves.endMissionReview },
