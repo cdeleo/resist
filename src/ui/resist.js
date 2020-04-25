@@ -234,7 +234,7 @@ angular.module('resist', [
   .constant('gameID', gameId)
   .constant('playerID', playerId)
   .constant('numPlayers', numPlayers)
-  .constant('multiplayer', BoardgameIO.Local())
+  .constant('multiplayer', BoardgameIO.SocketIO({ server: 'https://resist-275308.appspot.com' }))
   .constant('game', resistGame())
   .service('resist', Resist)
   .component('reDash', {

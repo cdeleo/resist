@@ -6,6 +6,7 @@
     "jest": "^25.4.0"
   },
   "scripts": {
+    "start": "node --experimental_modules src/server/server.mjs",
     "test": "jest"
   },
   "dependencies": {

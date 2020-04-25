@@ -1,0 +1,14 @@
+runtime: nodejs12
+
+handlers:
+- url: /socket.io/.*
+  script: auto
+- url: /common
+  static_dir: src/common
+- url: /dist
+  static_dir: dist
+- url: /
+  static_files: src/ui/index.html
+  upload: src/ui
+- url: /
+  static_dir: src/ui
